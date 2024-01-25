@@ -73,7 +73,7 @@ public class ProcesadorDeArchivos {
 					//Aquí ya estamos recorriendo los pedidos
 					Pedido pedido = new Pedido();
 					Cliente cliente = new Cliente();
-					List<Articulo> articulos = null;
+					List<Articulo> articulos = ArrayList<Articulo>();
 					
 					NodeList partesPedido = elementoPedido.getChildNodes();
 					for(int j = 0; j<partesPedido.getLength(); j++) {
@@ -84,12 +84,27 @@ public class ProcesadorDeArchivos {
 						if(parte.getNodeType() != Node.ELEMENT_NODE) {
 							//Filtramos los que no sean válidos
 						} else if(parte.getNodeName() == "numero-cliente") {
-							cliente.setNumeroCliente(parte.getNodeValue());
+							cliente.setNumeroCliente(parte.getTextContent());
 						} else if(parte.getNodeName() == "numero-pedido") {
-							pedido.setNumeroPedido(parte.getNodeValue());
+							pedido.setNumeroPedido(parte.getTextContent());
 						} else if(parte.getNodeName() == "fecha") {
-							pedido.setFecha(parte.getNodeValue());
+							pedido.setFecha(parte.getTextContent());
 						} else if(parte.getNodeName() == "articulos") {
+							//Aqui la parte son los articulos
+							NodeList articulosNodo = parte.getChildNodes();
+							
+							for (int x = 0; x<articulosNodo.getLength(); x++) {
+								Node articuloNodo = articulosNodo.item(x);
+								
+								if(articuloNodo.getNodeType() != Node.ELEMENT_NODE) {
+									//Saltamos los tipo no válido
+								} else {
+									Node codigo = articuloNodo.getFirstChild();
+									Node catidad = articuloNodo.getLastChild();
+									articulos.add(new Articulo(codigo.getTextContent(), cantidad.getTextContent()));
+								}
+							}
+							
 							
 						}
 					}
