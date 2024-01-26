@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataClasses.Articulo;
 import dataClasses.Pedido;
 
 
@@ -27,14 +28,8 @@ public class Manejo_db {
 			 * Tabla articulos
 			 * Una tabla va a tener el número de pedido, el número de articulo y la cantidad
 			 * 
-			 * 
 			 * Tabla pedidos
 			 * Otra tabla tendrá el número de pedido, la fecha y el número de cliente
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
 			 * 
 			 * */
 			 
@@ -72,9 +67,12 @@ public class Manejo_db {
 			//s.executeUpdate("INSERT INTO tabla1(campo1, campo2) VALUES('"+c1+"','"+c2+"')");
 			
 			//Queda pendiente escribir la consulta para insertar cosas
-			int rs = s.executeUpdate("INSERT INTO ");
+			s.executeUpdate("INSERT INTO pedidos VALUES('"+pedido.getNumeroPedido()+"','"+pedido.getCliente().getNumeroCliente()+"','"+pedido.getFecha()+"');");
 			
-			
+			for(Articulo articulo : pedido.getArticulos()) {
+				s.executeUpdate("INSERT INTO articulos VALUES('"+pedido.getNumeroPedido()+"','"+articulo.getCodigo()+"','"+articulo.getCantidad()+"');");
+				
+			}
 			
 			con.close();
 		} catch (Exception e) {
@@ -99,7 +97,10 @@ public class Manejo_db {
 			ResultSet rs = s.executeQuery("SELECT * FROM pedidos;");
 			
 			while (rs.next()) {
-				System.out.println(rs);
+				System.out.print(rs.getString(1));
+				System.out.print("\t"+rs.getString(2));
+				System.out.println("\t"+rs.getString(3));
+
 			}
 			
 			con.close();

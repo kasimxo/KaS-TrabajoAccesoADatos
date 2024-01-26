@@ -57,8 +57,7 @@ public class Main {
 	public static void procesarNuevo() {
 		try {
 			ProcesadorDeArchivos procesador = new ProcesadorDeArchivos();
-			Manejo_db mDB = new Manejo_db();
-			mDB.insertNuevosPedidos(procesador.procesarNuevoPedido());
+			procesador.procesarNuevoPedido();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
