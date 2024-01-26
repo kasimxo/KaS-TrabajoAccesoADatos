@@ -5,6 +5,8 @@ public class Articulo {
 	private String codigo;
 	private String cantidad;
 	
+	public Articulo() {};
+	
 	public Articulo(String codigo, String cantidad) {
 		super();
 		this.codigo = codigo;
@@ -24,7 +26,7 @@ public class Articulo {
 	}
 	@Override
 	public String toString() {
-		return "\tArticulo:\n\t\tCodigo=" + codigo + "\n\t\tCantidad: " + cantidad;
+		return "\tArticulo:\n\t\tCodigo=" + codigo + "\n\t\tCantidad: " + cantidad+"\n";
 	}
 	
 }

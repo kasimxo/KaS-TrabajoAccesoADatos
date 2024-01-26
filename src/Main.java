@@ -31,6 +31,7 @@ public class Main {
 				break;
 			case 2:
 				//Mostrar pedidos
+				mostrarPedidos();
 				break;
 			case 3:
 				//Exportar pedido
@@ -54,8 +55,18 @@ public class Main {
 	}
 	
 	public static void procesarNuevo() {
-		ProcesadorDeArchivos procesador = new ProcesadorDeArchivos();
-		procesador.procesarNuevoPedido();
+		try {
+			ProcesadorDeArchivos procesador = new ProcesadorDeArchivos();
+			Manejo_db mDB = new Manejo_db();
+			mDB.insertNuevosPedidos(procesador.procesarNuevoPedido());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void mostrarPedidos() {
+		Manejo_db mDB = new Manejo_db();
+		mDB.mostrarPedido("123");
 	}
 	
 

@@ -18,7 +18,10 @@ import dataClasses.Pedido;
 
 public class ProcesadorDeArchivos {
 	
-	public void procesarNuevoPedido() {
+	public List<Pedido> procesarNuevoPedido() {
+		
+		List<Pedido> pedidos = new ArrayList<Pedido>();
+		
 		File f = new File(".\\src\\archivosEntrada\\");
 		
 		File[] archivos = f.listFiles();
@@ -30,25 +33,31 @@ public class ProcesadorDeArchivos {
 		String opcion = Main.sc.nextLine();
 		
 		if(opcion.charAt(0) == 'T') {
-			procesarTodos(archivos);
+			pedidos = procesarTodos(archivos);
 		} else {
 			try {
 				int numero = Integer.parseInt(opcion);
-				procesar(archivos[numero-1]);
+				pedidos = procesar(archivos[numero-1]);
 			} catch (Exception e) {
 				System.err.println("Input no reconocido");
 			}
 		}
 		
+		return null;
+		
 	}
 	
-	public void procesarTodos(File[] archivos) {
+	public List<Pedido> procesarTodos(File[] archivos) {
+		List<Pedido> pedidos = new ArrayList<Pedido>();
 		for(File f : archivos) {
-			procesar(f);
+			pedidos.add(procesar(f));
 		}
+		return pedidos;
 	}
 	
-	public void procesar(File archivo) {
+	public List<Pedido> procesar(File archivo) {
+		
+		//Esta tremenda mierda se tendría que refactorizar con métodos para procesar pedido/cliente/articulo
 		
 		List<Pedido> pedidos = new ArrayList<Pedido>();
 		
@@ -73,7 +82,8 @@ public class ProcesadorDeArchivos {
 					//Aquí ya estamos recorriendo los pedidos
 					Pedido pedido = new Pedido();
 					Cliente cliente = new Cliente();
-					List<Articulo> articulos = ArrayList<Articulo>();
+					List<Articulo> articulos = new ArrayList<Articulo>();
+					
 					
 					NodeList partesPedido = elementoPedido.getChildNodes();
 					for(int j = 0; j<partesPedido.getLength(); j++) {
@@ -93,23 +103,37 @@ public class ProcesadorDeArchivos {
 							//Aqui la parte son los articulos
 							NodeList articulosNodo = parte.getChildNodes();
 							
+							
+							
 							for (int x = 0; x<articulosNodo.getLength(); x++) {
 								Node articuloNodo = articulosNodo.item(x);
 								
 								if(articuloNodo.getNodeType() != Node.ELEMENT_NODE) {
 									//Saltamos los tipo no válido
-								} else {
-									Node codigo = articuloNodo.getFirstChild();
-									Node catidad = articuloNodo.getLastChild();
-									articulos.add(new Articulo(codigo.getTextContent(), cantidad.getTextContent()));
+								} else if(articuloNodo.getNodeName() == "articulo"){
+									
+									Articulo art = new Articulo();
+									
+									NodeList nodosArticulo = articuloNodo.getChildNodes();
+									
+									for(int z = 0; z<nodosArticulo.getLength(); z++) {
+										Node nodoArticulo = nodosArticulo.item(z);
+										
+										if(nodoArticulo.getNodeType() != Node.ELEMENT_NODE) {
+											//Saltamos no validos
+										} else if(nodoArticulo.getNodeName() == "codigo"){
+											art.setCodigo(nodoArticulo.getTextContent());
+										} else if(nodoArticulo.getNodeName() == "cantidad") {
+											art.setCantidad(nodoArticulo.getTextContent());
+										}
+									}
+									articulos.add(art);
 								}
 							}
-							
-							
 						}
 					}
 					pedido.setCliente(cliente);
-					
+					pedido.setArticulos(articulos);
 					pedidos.add(pedido);
 				
 				}
@@ -125,7 +149,7 @@ public class ProcesadorDeArchivos {
 			e.printStackTrace();
 		}
 		
-		
+		return pedidos;
 		/*
 		try {
 			

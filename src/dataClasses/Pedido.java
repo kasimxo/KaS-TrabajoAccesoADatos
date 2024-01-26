@@ -73,7 +73,8 @@ public class Pedido {
 
 	@Override
 	public String toString() {
-		String s = String.format("Pedido número: %s\n%s\nFecha: %s\nArtículos: %s", numeroPedido, cliente, fecha, articulos);
+		String s = String.format("Pedido número: %s\n%s\nFecha: %s\nArtículos:\n", numeroPedido, cliente, fecha);
+		for(Articulo art : articulos) {s += art.toString();}
 		return s;
 	}
 	
