@@ -5,6 +5,9 @@ public class Cliente {
 	private String numeroCliente;
 	private String nombre;
 	private String apellidos;
+	private String empresa;
+	private String telefono;
+	private String direccion;
 	
 	public Cliente() {
 		
@@ -43,6 +46,30 @@ public class Cliente {
 	@Override
 	public String toString() {
 		return "Cliente: " + numeroCliente + " " + nombre + " " + apellidos;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
 	}
 
 	

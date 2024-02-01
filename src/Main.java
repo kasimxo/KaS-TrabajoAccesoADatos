@@ -66,6 +66,7 @@ public class Main {
 	public static void mostrarPedidos() {
 		Manejo_db mDB = new Manejo_db();
 		mDB.mostrarPedido("123");
+		mDB.cerrarConexion();
 	}
 	
 

@@ -32,7 +32,7 @@ public class ProcesadorDeArchivos {
 
 		String opcion = Main.sc.nextLine();
 		
-		if(opcion.charAt(0) == 'T') {
+		if(opcion.toUpperCase().charAt(0) == 'T') {
 			List<List<Pedido>> listadoPedidos = procesarTodos(archivos);
 
 			for(List<Pedido> pedido : listadoPedidos) {

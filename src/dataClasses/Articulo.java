@@ -4,6 +4,9 @@ public class Articulo {
 	
 	private String codigo;
 	private String cantidad;
+	private String categoria;
+	private String proveedor;
+	private String descripcion;
 	
 	public Articulo() {};
 	
@@ -27,6 +30,30 @@ public class Articulo {
 	@Override
 	public String toString() {
 		return "\tArticulo:\n\t\tCodigo=" + codigo + "\n\t\tCantidad: " + cantidad+"\n";
+	}
+
+	public String getProveedor() {
+		return proveedor;
+	}
+
+	public void setProveedor(String proveedor) {
+		this.proveedor = proveedor;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 	
 }
