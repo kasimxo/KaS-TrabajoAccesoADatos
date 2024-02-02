@@ -3,14 +3,16 @@ CREATE TABLE pedidos(
 	num_Cliente text, 
 	fecha text,
 	PRIMARY KEY (num_Pedido),
-	FOREIGN KEY (num_Cliente) REFERENCES clientes (num_Cliente));
+	FOREIGN KEY (num_Cliente) REFERENCES clientes (num_Cliente)
+);
 	
 CREATE TABLE rel_pedido_articulos(
 	num_Pedido text, 
 	num_Articulo text, 
 	cantidad text,
 	PRIMARY KEY(num_Pedido, num_Articulo)
-	FOREIGN KEY (num_Pedido) REFERENCES pedidos(num_Pedido));
+	FOREIGN KEY (num_Pedido) REFERENCES pedidos(num_Pedido)
+);
 	
 CREATE TABLE clientes(
 	num_Cliente text,
@@ -21,8 +23,40 @@ CREATE TABLE clientes(
 	empresa text,
 	PRIMARY KEY (num_Cliente)
 );
-	
-	
-	
+
+CREATE TABLE articulos(
+	num_Articulo text,
+	descripcion text,
+	categoria text,
+	stock text,
+	proveedor text,
+	PRIMARY KEY (num_Articulo)
+);
+
+DROP VIEW mostrar_pedidos;
+CREATE VIEW mostrar_pedidos(
+'Num. Pedido',
+'Fecha pedido',
+'Nombre Cliente',
+'Apellidos Cliente',
+'Telefono',
+'Articulos'
+)
+
+AS SELECT(
+		p.num_Pedido,
+		p.fecha,
+		c.nombre,
+		c.apellidos,
+		c.telefono,
+		GROUP_CONCAT(
+			(SELECT (a.descripcion,
+			rpa.cantidad)
+			FROM rel_pedido_articulos rpa
+			JOIN articulos a on(rpa.num_Articulo = a.num_Articulo) 
+		 ),' '))
+		 FROM pedidos p
+		 JOIN clientes c on(p.num_Cliente = c.num_Cliente)
+;
 
 

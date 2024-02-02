@@ -32,8 +32,48 @@ CREATE TABLE articulos(
 	proveedor text,
 	PRIMARY KEY (num_Articulo)
 );
-	
-	
-	
 
+DROP VIEW mostrar_pedidos;
+CREATE VIEW mostrar_pedidos(
+'Num. Pedido',
+'Fecha pedido',
+'Nombre Cliente',
+'Apellidos Cliente',
+'Telefono',
+'Articulos'
+)
+
+AS SELECT(
+		p.num_Pedido,
+		p.fecha,
+		c.nombre,
+		c.apellidos,
+		c.telefono,
+		GROUP_CONCAT(
+			(SELECT (a.descripcion,
+			rpa.cantidad)
+			FROM rel_pedido_articulos rpa
+			JOIN articulos a on(rpa.num_Articulo = a.num_Articulo) 
+		 ),' '))
+		 FROM pedidos p
+		 JOIN clientes c on(p.num_Cliente = c.num_Cliente)
+;
+
+CREATE VIEW mostrar_pedidos
+
+AS SELECT
+		p.num_Pedido,
+		p.fecha,
+		c.nombre,
+		c.apellidos,
+		c.telefono,
+		GROUP_CONCAT(
+			(SELECT a.descripcion,
+			
+			FROM rel_pedido_articulos rpa
+			JOIN articulos a on(rpa.num_Articulo = a.num_Articulo) 
+		 ),' ')
+		 FROM pedidos p
+		 JOIN clientes c on(p.num_Cliente = c.num_Cliente)
+;
 

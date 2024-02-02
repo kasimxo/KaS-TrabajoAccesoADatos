@@ -4,10 +4,11 @@ public class Main {
 	
 	public static boolean funcionando = true;
 	public static Scanner sc;
+	public static Manejo_db mDB;
 	
 	public static void main(String[] args) {
 		 sc = new Scanner(System.in);
-		
+		mDB = new Manejo_db();
 		
 		while (funcionando) {
 			menu();
@@ -51,7 +52,7 @@ public class Main {
 		}catch(Exception e) {
 			System.err.println("Input no reconocido");
 		}
-		
+		mDB.cerrarConexion();
 	}
 	
 	public static void procesarNuevo() {
@@ -64,9 +65,8 @@ public class Main {
 	}
 	
 	public static void mostrarPedidos() {
-		Manejo_db mDB = new Manejo_db();
-		mDB.mostrarPedido("123");
-		mDB.cerrarConexion();
+		mDB.mostrarPedidos();
+		
 	}
 	
 
