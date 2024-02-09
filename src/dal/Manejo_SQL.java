@@ -1,3 +1,4 @@
+package dal;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,26 +10,36 @@ import java.util.List;
 
 import dataClasses.Articulo;
 import dataClasses.Pedido;
+import main.Main;
 
 
-public class Manejo_db {
+public class Manejo_SQL {
 	
 	private Connection con;
 	private Statement s;
 	
-	public Manejo_db() {
+	public Manejo_SQL() {
 		try {
-			File dbPath = new File(".\\src\\db\\pedidosAdiDam.db");
+			File dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			
+			if(!dbPath.exists()) {
+				System.err.println("No se ha encontrado la base de datos SQL");
+				throw new Exception();
+			}
+			
 			Class.forName("org.sqlite.JDBC");
 			this.con = DriverManager.getConnection("jdbc:sqlite:"+dbPath.getAbsolutePath());
 			
 			this.s = con.createStatement();
 			cargaInicial();
 		} catch (Exception e) {
-			System.err.println("No se ha podido establecer conexión con la base de datos.");
+			System.err.println("No se ha podido establecer conexión con la base de datos SQL.");
 		}
 	}
 	
+	/**
+	 * Este método se usa únicamente para crear los datos del primer archivo y simular que ya estuvieran los clientes y los artículos creados
+	 */
 	public void cargaInicial() {
 		String[] clientes = {"1234567890", "9876543210","1234567891", "1234567892", "1234567893"}; 
 		String[] articulos = {"123456","234567","345678","456789","567890","678901","789012","890123","123457","234568","901234","012345"};

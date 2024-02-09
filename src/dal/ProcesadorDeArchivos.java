@@ -1,3 +1,4 @@
+package dal;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,13 +17,15 @@ import dataClasses.Articulo;
 import dataClasses.Cliente;
 import dataClasses.Pedido;
 
+import main.Main;
+
 public class ProcesadorDeArchivos {
 	
 	public void procesarNuevoPedido() {
 		
-		Manejo_db mDB = new Manejo_db();
+		Manejo_SQL mDB = new Manejo_SQL();
 		
-		File f = new File(".\\src\\archivosEntrada\\");
+		File f = new File(".\\files\\archivosEntrada\\");
 		
 		File[] archivos = f.listFiles();
 		System.out.println("¿Qué archivo quieres procesar? Introduce el número del archivo o 'T' para procesarlos todos");
@@ -34,6 +37,8 @@ public class ProcesadorDeArchivos {
 		
 		if(opcion.toUpperCase().charAt(0) == 'T') {
 			List<List<Pedido>> listadoPedidos = procesarTodos(archivos);
+			
+			System.out.println("Se han procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
 
 			for(List<Pedido> pedido : listadoPedidos) {
 				mDB.insertNuevosPedidos(pedido);
@@ -42,6 +47,9 @@ public class ProcesadorDeArchivos {
 			try {
 				int numero = Integer.parseInt(opcion);
 				List<Pedido> pedido = procesar(archivos[numero-1]);
+				
+				System.out.println("Se ha procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
+				
 				mDB.insertNuevosPedidos(pedido);
 			} catch (Exception e) {
 				System.err.println("Input no reconocido");

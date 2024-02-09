@@ -1,14 +1,25 @@
+package main;
 import java.util.Scanner;
+
+import dal.Manejo_NeoDatis;
+import dal.Manejo_SQL;
+import dal.ProcesadorDeArchivos;
 
 public class Main {
 	
 	public static boolean funcionando = true;
 	public static Scanner sc;
-	public static Manejo_db mDB;
+	
+	// Clase que maneja la conexión y peticiones con la bbdd SQLite
+	public static Manejo_SQL mDB;
+	
+	// Clase que maneja la conexión y peticiones con la bbdd NeoDatis
+	public static Manejo_NeoDatis mND;
 	
 	public static void main(String[] args) {
 		 sc = new Scanner(System.in);
-		mDB = new Manejo_db();
+		mDB = new Manejo_SQL();
+		mND = new Manejo_NeoDatis();
 		
 		while (funcionando) {
 			menu();
@@ -17,7 +28,7 @@ public class Main {
 	}
 	
 	public static void menu() {
-		String[] opciones = {"1 Procesar nuevo pedido", "2 Mostrar pedidos", "3 Exportar pedido", "4 Configuración", "5 Salir"};
+		String[] opciones = {"1 Procesar nuevo pedido", "2 Mostrar pedidos", "3 Exportar pedido", "4. Generar informes", "5 Configuración", "6 Salir"};
 		System.out.println("Bienvenido al sistema gestor de pedidos de AdiDAM");
 		for (String s : opciones) { System.out.println(s);}
 		
@@ -38,9 +49,12 @@ public class Main {
 				//Exportar pedido
 				break;
 			case 4:
-				//Configuración
+				//Generar informes
 				break;
 			case 5:
+				//Configuración
+				break;
+			case 6:
 				//Salir
 				System.out.println("Saliendo.");
 				funcionando = false;
