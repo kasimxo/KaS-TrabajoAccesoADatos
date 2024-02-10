@@ -37,19 +37,18 @@ DROP VIEW mostrar_pedidos;
 
 CREATE VIEW mostrar_pedidos
 AS SELECT
-		p.num_Pedido,
-		p.fecha,
-		c.nombre,
-		c.apellidos,
-		c.telefono,
-		GROUP_CONCAT(
-			(SELECT a.descripcion || ' ' ||
-			rpa.cantidad
-			FROM rel_pedido_articulos rpa
-			JOIN articulos a on(rpa.num_Articulo = a.num_Articulo)
-			WHERE rpa.num_Pedido = p.num_Pedido 
-		 ),' ')
-		 FROM pedidos p
-		 JOIN clientes c on(p.num_Cliente = c.num_Cliente)
+p.num_Pedido as 'Número de pedido',
+p.fecha AS 'Fecha de pedido',
+c.nombre AS 'Nombre del cliente',
+c.apellidos AS 'Apellidos del cliente',
+c.telefono AS 'Teléfono',
+(SELECT GROUP_CONCAT(a.descripcion || ' ' ||
+	rpa.cantidad, ', ' )
+	FROM rel_pedido_articulos rpa
+	JOIN articulos a on(rpa.num_Articulo = a.num_Articulo)
+	join pedidos pp on(rpa.num_Pedido = pp.num_Pedido)
+	GROUP BY pp.num_Pedido) AS 'Artículos'
+ FROM pedidos p
+ JOIN clientes c on(p.num_Cliente = c.num_Cliente)
 ;
 

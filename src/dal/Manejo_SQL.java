@@ -3,6 +3,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -20,7 +21,12 @@ public class Manejo_SQL {
 	
 	public Manejo_SQL() {
 		try {
-			File dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			
+			//WINDOWS:
+			//File dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			
+			//LINUX:
+			File dbPath = new File("./files/db/pedidosAdiDam.db");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos SQL");
@@ -268,15 +274,22 @@ public class Manejo_SQL {
 	public void mostrarPedido(String numPedido) {
 		try {
 
-			ResultSet rs = s.executeQuery("SELECT * FROM pedidos;");
+			ResultSet rs = s.executeQuery("SELECT * FROM mostrar_pedidos WHERE 'Número de pedido'='"+numPedido+"';");
+			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			int nCol = rsmd.getColumnCount();
+			
+			for(int i = 1; i<= nCol; i++) {
+				System.out.printf("%-25s",rsmd.getColumnLabel(i));
+			}
+			
+			System.out.println();
 			
 			while (rs.next()) {
-				System.out.print(rs.getString(1));
-				System.out.print("\t"+rs.getString(2));
-				System.out.println("\t"+rs.getString(3));
-
+				System.out.printf("%-25s%-25s%-25s%-25s%-25s%-25s\n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
+				
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -285,15 +298,22 @@ public class Manejo_SQL {
 	public void mostrarPedidos() {
 		try {
 
-			ResultSet rs = s.executeQuery("SELECT * FROM pedidos;");
+			ResultSet rs = s.executeQuery("SELECT * FROM mostrar_pedidos;");
+			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			int nCol = rsmd.getColumnCount();
+			
+			for(int i = 1; i<= nCol; i++) {
+				System.out.printf("%-25s",rsmd.getColumnLabel(i));
+			}
+			
+			System.out.println();
 			
 			while (rs.next()) {
-				System.out.print(rs.getString(1));
-				System.out.print("\t"+rs.getString(2));
-				System.out.println("\t"+rs.getString(3));
-
+				System.out.printf("%-25s%-25s%-25s%-25s%-25s%-25s\n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
+				
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
