@@ -1,3 +1,9 @@
+DROP TABLE pedidos;
+DROP TABLE rel_pedido_articulos;
+DROP TABLE clientes;
+DROP TABLE articulos;
+DROP VIEW mostrar_pedidos;
+
 CREATE TABLE pedidos(
 	num_Pedido text, 
 	num_Cliente text, 
@@ -11,7 +17,8 @@ CREATE TABLE rel_pedido_articulos(
 	num_Articulo text, 
 	cantidad text,
 	PRIMARY KEY(num_Pedido, num_Articulo)
-	FOREIGN KEY (num_Pedido) REFERENCES pedidos(num_Pedido)
+	FOREIGN KEY (num_Pedido) REFERENCES pedidos(num_Pedido) ON DELETE CASCADE
+	FOREIGN KEY (num_Articulo) REFERENCES articulos(num_Articulo)
 );
 	
 CREATE TABLE clientes(
@@ -33,7 +40,6 @@ CREATE TABLE articulos(
 	PRIMARY KEY (num_Articulo)
 );
 
-DROP VIEW mostrar_pedidos;
 
 CREATE VIEW mostrar_pedidos
 AS SELECT

@@ -12,6 +12,7 @@ import java.util.List;
 import dataClasses.Articulo;
 import dataClasses.Pedido;
 import main.Main;
+import utils.Input;
 
 
 public class Manejo_SQL {
@@ -119,7 +120,7 @@ public class Manejo_SQL {
 			} else {
 				System.err.println("El cliente "+pedido.getCliente().getNumeroCliente()+" no está registrado.");
 				System.err.println("1. Cancelar pedido\n2. Registrar nuevo cliente.");
-				switch(Main.sc.nextInt()) {
+				switch(Input.leerInt()) {
 				case 1:
 					System.out.println("Se ha cancelado el procesamiento de este pedido.");
 					return;
@@ -137,7 +138,7 @@ public class Manejo_SQL {
 				if(!comprobarArticulo(articulo.getCodigo())) {
 					System.err.println("El articulo " + articulo.getCodigo()+" no existe en el almacen.");
 					System.err.println("1. Cancelar pedido\n2. Registrar nuevo artículo.");
-					switch(Main.sc.nextInt()) {
+					switch(Input.leerInt()) {
 					case 1:
 						System.out.println("Se ha cancelado el procesamiento de este pedido.");
 						return;
@@ -157,8 +158,7 @@ public class Manejo_SQL {
 		} catch (SQLException e) {
 			System.err.println("Se ha producido un error tratanto de guardar el pedido en la base de datos, el pedido número " + pedido.getNumeroPedido()+" ya existe.");
 			System.err.println("1. Descartar el nuevo pedido\n2. Sobreescribir el antiguo pedido");
-			int opcion = Main.sc.nextInt();
-			switch (opcion) {
+			switch (Input.leerInt()) {
 				case 1:
 					borrarPedido(pedido);
 					return;
@@ -257,9 +257,9 @@ public class Manejo_SQL {
 	public void borrarPedido(Pedido pedido) {
 
 		try {
-			
-			s.executeUpdate("DELETE FROM rel_pedido_articulos WHERE num_Pedido='"+pedido.getNumeroPedido()+"';");
 			s.executeUpdate("DELETE FROM pedidos WHERE num_Pedido='"+pedido.getNumeroPedido()+"';");
+			s.executeUpdate("DELETE FROM rel_pedido_articulos WHERE num_Pedido='"+pedido.getNumeroPedido()+"';");
+			
 			
 			
 		} catch (Exception e) {

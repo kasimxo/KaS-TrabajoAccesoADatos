@@ -18,6 +18,7 @@ import dataClasses.Cliente;
 import dataClasses.Pedido;
 
 import main.Main;
+import utils.Input;
 
 public class ProcesadorDeArchivos {
 	
@@ -25,7 +26,11 @@ public class ProcesadorDeArchivos {
 		
 		Manejo_SQL mDB = new Manejo_SQL();
 		
-		File f = new File(".\\files\\archivosEntrada\\");
+		//WINDOWS
+		//File f = new File(".\\files\\archivosEntrada\\");
+		
+		//LINUX
+		File f = new File("./files/archivosEntrada/");
 		
 		File[] archivos = f.listFiles();
 		System.out.println("¿Qué archivo quieres procesar? Introduce el número del archivo o 'T' para procesarlos todos");
@@ -33,7 +38,7 @@ public class ProcesadorDeArchivos {
 			System.out.printf("%d - %s\n", i, archivos[i-1].getName());
 		}
 
-		String opcion = Main.sc.nextLine();
+		String opcion = Input.leerString();
 		
 		if(opcion.toUpperCase().charAt(0) == 'T') {
 			List<List<Pedido>> listadoPedidos = procesarTodos(archivos);

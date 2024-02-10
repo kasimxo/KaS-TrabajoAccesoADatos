@@ -4,11 +4,11 @@ import java.util.Scanner;
 import dal.Manejo_NeoDatis;
 import dal.Manejo_SQL;
 import dal.ProcesadorDeArchivos;
+import utils.Input;
 
 public class Main {
 	
 	public static boolean funcionando = true;
-	public static Scanner sc;
 	
 	// Clase que maneja la conexión y peticiones con la bbdd SQLite
 	public static Manejo_SQL mDB;
@@ -16,15 +16,18 @@ public class Main {
 	// Clase que maneja la conexión y peticiones con la bbdd NeoDatis
 	public static Manejo_NeoDatis mND;
 	
+	
 	public static void main(String[] args) {
-		 sc = new Scanner(System.in);
+		
+		//Con esto iniciamos la clase que manejará el input
+		new Input();
+		
 		mDB = new Manejo_SQL();
 		mND = new Manejo_NeoDatis();
 		
 		while (funcionando) {
 			menu();
 		}
-		sc.close();
 	}
 	
 	public static void menu() {
@@ -32,41 +35,36 @@ public class Main {
 		System.out.println("Bienvenido al sistema gestor de pedidos de AdiDAM");
 		for (String s : opciones) { System.out.println(s);}
 		
-		String input = sc.nextLine();
+		switch (Input.leerInt()) {
+		case 1:
+			//Procesar nuevo pedido
+			procesarNuevo();
+			break;
+		case 2:
+			//Mostrar pedidos
+			mostrarPedidos();
+			break;
+		case 3:
+			//Exportar pedido
+			break;
+		case 4:
+			//Generar informes
+			break;
+		case 5:
+			//Configuración
+			break;
+		case 6:
+			//Salir
+			System.out.println("Saliendo.");
+			funcionando = false;
+			mDB.cerrarConexion();
+			break;
+		default:
+			break;
 		
-		try {
-			int seleccion = Integer.parseInt(input);
-			switch (seleccion) {
-			case 1:
-				//Procesar nuevo pedido
-				procesarNuevo();
-				break;
-			case 2:
-				//Mostrar pedidos
-				mostrarPedidos();
-				break;
-			case 3:
-				//Exportar pedido
-				break;
-			case 4:
-				//Generar informes
-				break;
-			case 5:
-				//Configuración
-				break;
-			case 6:
-				//Salir
-				System.out.println("Saliendo.");
-				funcionando = false;
-				break;
-			default:
-				break;
-			
-			}
-		}catch(Exception e) {
-			System.err.println("Input no reconocido");
 		}
-		mDB.cerrarConexion();
+
+		
 	}
 	
 	public static void procesarNuevo() {
