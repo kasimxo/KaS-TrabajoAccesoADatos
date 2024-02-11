@@ -7,11 +7,18 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import dataClasses.Articulo;
 import dataClasses.Cliente;
@@ -23,8 +30,6 @@ import utils.Input;
 public class ProcesadorDeArchivos {
 	
 	public void procesarNuevoPedido() {
-		
-		Manejo_SQL mDB = new Manejo_SQL();
 		
 		//WINDOWS
 		//File f = new File(".\\files\\archivosEntrada\\");
@@ -46,7 +51,7 @@ public class ProcesadorDeArchivos {
 			System.out.println("Se han procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
 
 			for(List<Pedido> pedido : listadoPedidos) {
-				mDB.insertNuevosPedidos(pedido);
+				Main.mDB.insertNuevosPedidos(pedido);
 			}
 		} else {
 			try {
@@ -55,12 +60,42 @@ public class ProcesadorDeArchivos {
 				
 				System.out.println("Se ha procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
 				
-				mDB.insertNuevosPedidos(pedido);
+				Main.mDB.insertNuevosPedidos(pedido);
 			} catch (Exception e) {
 				System.err.println("Input no reconocido");
 			}
 		}
 	}
+	
+	public boolean validarArchivo(Document doc) {
+
+		try {
+			//SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.);
+			SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+			//WINDOWS
+			//Source schemaFile = new StreamSource(new File("".\\files\\schema\\pedidos.xsd""));
+			
+			//LINUX
+			Source schemaFile = new StreamSource(new File("./files/schema/pedidos.xsd"));
+			
+			Schema schema = factory.newSchema(schemaFile);
+			
+			Validator validator = schema.newValidator();
+		
+			validator.validate(new DOMSource(doc));
+			System.out.println("El archivo cumple con el formato correcto.");
+			return true;
+			
+		} catch (SAXException e) {
+			System.out.println("El archivo no cumple con el formato correcto.");
+			return false;
+		} catch (Exception e) {
+			System.out.println("No se ha podido verificar que el archivo cumpla con el formato correcto.");
+			return false;
+		}
+		
+	}
+	
 	
 	/*
 	 * Procesamos un array de archivos xml
@@ -68,7 +103,11 @@ public class ProcesadorDeArchivos {
 	public List<List<Pedido>> procesarTodos(File[] archivos) {
 		List<List<Pedido>> listadoPedidos = new ArrayList<List<Pedido>>();
 		for(File f : archivos) {
-			listadoPedidos.add(procesar(f));
+			List<Pedido> pedidos = procesar(f);
+			
+			if(pedidos != null) {
+				listadoPedidos.add(procesar(f));
+			}
 		}
 		return listadoPedidos;
 	}
@@ -82,10 +121,13 @@ public class ProcesadorDeArchivos {
 		List<Pedido> pedidos = new ArrayList<Pedido>();
 		
 		try {
-			
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			
 			Document doc = builder.parse(archivo);
+			
+			if(!validarArchivo(doc)) {
+				return null;
+			}
+			
 			Element root = (Element) doc.getDocumentElement();
 			
 			//<pedidos>

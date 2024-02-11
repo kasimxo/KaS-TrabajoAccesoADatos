@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pedidos>
   <pedido>
-    <numero-cliente>1234567890</numero-cliente>
+    <numero-cliente>1234560</numero-cliente>
     <numero-pedido>92345</numero-pedido>
     <fecha>2024-01-22</fecha>
     <articulos>
       <articulo>
-        <codigo>123456</codigo>
+        <codigo>126</codigo>
         <cantidad>190</cantidad>
       </articulo>
       <articulo>
@@ -51,7 +51,7 @@
     <fecha>2024-01-25</fecha>
     <articulos>
       <articulo>
-        <codigo>789012</codigo>
+        <codigo>712</codigo>
         <cantidad>70</cantidad>
       </articulo>
       <articulo>
