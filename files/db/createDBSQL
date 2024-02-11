@@ -3,6 +3,7 @@ DROP TABLE rel_pedido_articulos;
 DROP TABLE clientes;
 DROP TABLE articulos;
 DROP VIEW mostrar_pedidos;
+DROP VIEW mostrar_lineas_pedido;
 
 CREATE TABLE pedidos(
 	num_Pedido text, 
@@ -37,6 +38,7 @@ CREATE TABLE articulos(
 	categoria text,
 	stock text,
 	proveedor text,
+	precio text,
 	PRIMARY KEY (num_Articulo)
 );
 
@@ -48,13 +50,24 @@ p.fecha AS 'Fecha de pedido',
 c.nombre AS 'Nombre del cliente',
 c.apellidos AS 'Apellidos del cliente',
 c.telefono AS 'Teléfono',
-(SELECT GROUP_CONCAT(a.descripcion || ' ' ||
+(	SELECT GROUP_CONCAT(a.descripcion || ' ' ||
 	rpa.cantidad, ', ' )
 	FROM rel_pedido_articulos rpa
 	JOIN articulos a on(rpa.num_Articulo = a.num_Articulo)
 	join pedidos pp on(rpa.num_Pedido = pp.num_Pedido)
-	GROUP BY pp.num_Pedido) AS 'Artículos'
+	GROUP BY pp.num_Pedido
+) AS 'Artículos'
  FROM pedidos p
  JOIN clientes c on(p.num_Cliente = c.num_Cliente)
 ;
+
+CREATE VIEW mostrar_lineas_pedido
+AS SELECT 
+rpa.cantidad AS 'Cantidad',
+rpa.num_Pedido AS 'Número de pedido',
+rpa.num_Articulo AS 'Código de artículo',
+a.descripcion || ' - ' || a.categoria AS 'Nombre-Categoria',
+a.precio
+FROM rel_pedido_articulos rpa
+JOIN articulos a on (rpa.num_Articulo=a.num_Articulo);
 

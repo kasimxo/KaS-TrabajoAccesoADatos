@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dataClasses.Articulo;
+import dataClasses.LineaPedido;
 import dataClasses.Pedido;
 import main.Main;
 import utils.Input;
@@ -323,8 +324,9 @@ public class Manejo_SQL {
 				String categoria = categorias[(int) (Math.random()*categorias.length)];
 				String proveedor = proveedores[(int) (Math.random()*proveedores.length)];
 				String descripcion = descripciones[(int) (Math.random()*descripciones.length)];
+				String precio = Integer.toString((int)(Math.random()*40)+10);
 				
-				String input = String.format("'%s','%s','%s','%s','%s'", articulo, descripcion,categoria, stock, proveedor);
+				String input = String.format("'%s','%s','%s','%s','%s', '%s'", articulo, descripcion,categoria, stock, proveedor, precio);
 				
 				s.executeUpdate("INSERT INTO articulos VALUES("+input+");");
 				
@@ -426,7 +428,6 @@ public class Manejo_SQL {
 	}
 	
 	public void borrarBaseDeDatos() {
-		
 		try {
 			
 			establecerConexion();
@@ -442,7 +443,28 @@ public class Manejo_SQL {
 			//e.printStackTrace();
 			cerrarConexion();
 		}
-		
+	}
+	
+	public List<LineaPedido> exportarLineasPedido(){
+		try {
+			establecerConexion();
+			
+			ResultSet rs = s.executeQuery("SELECT * FROM mostrar_lineas_pedido;");
+			
+			List<LineaPedido> exportacion = new ArrayList<LineaPedido>();
+			
+			while (rs.next()) {
+				exportacion.add(new LineaPedido(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
+			}
+			
+			cerrarConexion();
+			
+			return exportacion;
+		} catch (Exception e) {
+			System.out.println("No se han podido exportar las líneas de pedido.");
+			cerrarConexion();
+			return null;
+		}
 	}
 	
 }
