@@ -1,11 +1,13 @@
 package dal;
 
 import java.io.File;
+import java.util.List;
 
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 
 import dataClasses.LineaPedido;
+import dataClasses.Pedido;
 import main.Main;
 
 public class Manejo_NeoDatis {
@@ -43,15 +45,44 @@ public class Manejo_NeoDatis {
 	 */
 	public void sincronizacion() {
 		cargaLineasPedido();
-		
-		
+		cargarPedidos();	
+	}
+	
+	public void cargarPedidos() {
+		try {
+			establecerConexion();
+			
+			List<Pedido> pedidos = Main.mDB.exportarPedidos();
+			
+			if(pedidos == null) {
+				System.out.println("No se han podido insertar los pedidos en la bbdd NeoDatis.");
+				return;
+			}
+			
+			for(Pedido p : pedidos) {
+				odb.store(p);
+			}
+			
+			System.out.println("Se han insertado los pedidos en la bbdd NeoDatis correctamente.");
+			
+			cerrarConexion();
+		} catch (Exception e) {
+			System.out.println("No se han podido insertar los pedidos en la bbdd NeoDatis.");
+		}
 	}
 	
 	public void cargaLineasPedido() {
 		try {
 			establecerConexion();
 			
-			for(LineaPedido lp : Main.mDB.exportarLineasPedido()) {
+			List<LineaPedido> lineas = Main.mDB.exportarLineasPedido();
+			
+			if (lineas == null) {
+				System.out.println("No se han podido insertar las líneas de pedido en la bbdd NeoDatis.");
+				return;
+			}
+			
+			for(LineaPedido lp : lineas) {
 				odb.store(lp);
 			}
 			

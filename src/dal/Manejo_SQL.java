@@ -445,6 +445,11 @@ public class Manejo_SQL {
 		}
 	}
 	
+	public List<Pedido> exportarPedidos() {
+		return null;
+	}
+	
+	
 	public List<LineaPedido> exportarLineasPedido(){
 		try {
 			establecerConexion();
