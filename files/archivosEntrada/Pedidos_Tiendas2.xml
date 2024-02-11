@@ -41,7 +41,7 @@
       </articulo>
       <articulo>
         <codigo>123456</codigo>
-        <cantidad>60</cantidad>
+        <cantidad>30</cantidad>
       </articulo>
     </articulos>
   </pedido>

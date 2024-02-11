@@ -17,6 +17,8 @@ import utils.Input;
 
 public class Manejo_SQL {
 	
+	private File dbPath;
+	
 	private Connection con;
 	private Statement s;
 	
@@ -24,10 +26,10 @@ public class Manejo_SQL {
 		try {
 			
 			//WINDOWS:
-			//File dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			// dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
 			
 			//LINUX:
-			File dbPath = new File("./files/db/pedidosAdiDam.db");
+			dbPath = new File("./files/db/pedidosAdiDam.db");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos SQL");
@@ -38,10 +40,35 @@ public class Manejo_SQL {
 			this.con = DriverManager.getConnection("jdbc:sqlite:"+dbPath.getAbsolutePath());
 			
 			this.s = con.createStatement();
+			
+			 //db.execSQL("PRAGMA foreign_keys=ON");
+			//s.executeQuery("PRAGMA foreign_keys=ON");
+			s.execute("PRAGMA foreign_keys=ON");
+			
+			//Hacemos la carga de los productos y clientes del primer archivo, simulando que ya estuvieran guardados en la bbdd
 			cargaInicial();
+			
+			cerrarConexion();
 		} catch (Exception e) {
 			System.err.println("No se ha podido establecer conexión con la base de datos SQL.");
+			cerrarConexion();
+			//e.printStackTrace();
 		}
+	}
+	
+	public void establecerConexion() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			this.con = DriverManager.getConnection("jdbc:sqlite:"+dbPath.getAbsolutePath());
+			
+			this.s = con.createStatement();
+			
+			s.execute("PRAGMA foreign_keys=ON");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -57,7 +84,6 @@ public class Manejo_SQL {
 			crearArticulo(a);
 		}
 	}
-	
 	
 	public void crearCliente(String num_Cliente) {
 		try {
@@ -85,19 +111,62 @@ public class Manejo_SQL {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
 	public void insertNuevosPedidos(List<Pedido> pedidos) {
 		for(Pedido p : pedidos) {
-			insertNuevoPedido(p);
+			int resultado = insertNuevoPedido(p);
+			
+			switch (resultado) {
+			case 0:
+				break;
+			case -1:
+				sobreescribirPedido(p);
+				break;
+			case -2:
+				break;
+			case -3:
+				borrarPedido(p);
+				break;
+			default:
+				break;
+			}
+			
 		}
+	}
+	
+	public void sobreescribirPedido(Pedido pedido) {
+		try {
+			
+			establecerConexion();
+			
+			s.executeUpdate("INSERT OR REPLACE INTO pedidos VALUES('"+pedido.getNumeroPedido()+"','"+pedido.getCliente().getNumeroCliente()+"','"+pedido.getFecha()+"');");
+			
+			cerrarConexion();
+		} catch (SQLException e) {
+			System.err.println("No se ha podido sobreescribir el pedido");
+			//e.printStackTrace();
+			return;
+		}
+		try {
+			for(Articulo articulo : pedido.getArticulos()) {
+				establecerConexion();
+				s.executeUpdate("INSERT INTO rel_pedido_articulos VALUES('"+pedido.getNumeroPedido()+"','"+articulo.getCodigo()+"','"+articulo.getCantidad()+"');");
+				cerrarConexion();
+			}
+		} catch (Exception e) {	
+			cerrarConexion();
+		}
+		cerrarConexion();
+		System.out.println("Se ha reemplazado el pedido "+pedido.getNumeroPedido()+" con éxito.");
 	}
 	
 	public boolean comprobarCliente(String num_Cliente) {
 		try {
 			ResultSet rs = s.executeQuery("SELECT * FROM clientes WHERE num_Cliente='"+num_Cliente+"';");
+			
 			if(rs.next()) {
 				//Si hay un cliente con ese id devuelve true
 				return true;
@@ -109,11 +178,21 @@ public class Manejo_SQL {
 		
 	}
 	
-	
-	public void insertNuevoPedido(Pedido pedido) {
+	/**
+	 * 
+	 * @param pedido
+	 * @return 
+	 * 	0 - Se ha insertado correctamente
+	 * -1 - El usuario quiere sobreescribir un pedido existente 
+	 * -2 - No ha sido posible insertar el pedido
+	 * -3 - Es necesario eliminar el nuevo pedido por falta de stock
+	 */
+	public int insertNuevoPedido(Pedido pedido) {
 
 
 		try {
+			establecerConexion();
+			
 			System.out.println("Procesando el pedido: "+pedido.getNumeroPedido());
 			if(comprobarCliente(pedido.getCliente().getNumeroCliente())) {
 				
@@ -123,13 +202,15 @@ public class Manejo_SQL {
 				switch(Input.leerInt()) {
 				case 1:
 					System.out.println("Se ha cancelado el procesamiento de este pedido.");
-					return;
+					cerrarConexion();
+					return -2;
 				case 2:
 					crearArticulo(pedido.getCliente().getNumeroCliente());
 					break;
 				default:
 					System.out.println("Opción no reconocida. Se ha cancelado el procesamiento de este pedido.");
-					return;
+					cerrarConexion();
+					return -2;
 					
 				}
 			}
@@ -141,46 +222,56 @@ public class Manejo_SQL {
 					switch(Input.leerInt()) {
 					case 1:
 						System.out.println("Se ha cancelado el procesamiento de este pedido.");
-						return;
+						cerrarConexion();
+						return -2;
 					case 2:
 						crearArticulo(articulo.getCodigo());
 						break;
 					default:
 						System.out.println("Opción no reconocida. Se ha cancelado el procesamiento.");
-						return;
+						cerrarConexion();
+						return -2;
 					}
 				} 
 				
 				comprobarStockArticulo(articulo);
 			}
 			s.executeUpdate("INSERT INTO pedidos VALUES('"+pedido.getNumeroPedido()+"','"+pedido.getCliente().getNumeroCliente()+"','"+pedido.getFecha()+"');");
-			
+			cerrarConexion();
 		} catch (SQLException e) {
 			System.err.println("Se ha producido un error tratanto de guardar el pedido en la base de datos, el pedido número " + pedido.getNumeroPedido()+" ya existe.");
-			System.err.println("1. Descartar el nuevo pedido\n2. Sobreescribir el antiguo pedido");
+			System.out.println("1. Descartar el nuevo pedido\n2. Sobreescribir el antiguo pedido");
+			//e.printStackTrace();
 			switch (Input.leerInt()) {
 				case 1:
-					borrarPedido(pedido);
-					return;
+					//borrarPedido(pedido);
+					cerrarConexion();
+					return 0;
 				case 2:
-					borrarPedido(pedido);
-					insertNuevoPedido(pedido);
-					return;
+					//borrarPedido(pedido);
+					//insertNuevoPedido(pedido);
+					cerrarConexion();
+					return -1;
 				default:
 					break;
 			}
 		} catch (Exception e) {
-			borrarPedido(pedido);
-			return;
+		
+			cerrarConexion();
+			return -3;
 		}
 		
 		try {
 			for(Articulo articulo : pedido.getArticulos()) {
+				establecerConexion();
 				s.executeUpdate("INSERT INTO rel_pedido_articulos VALUES('"+pedido.getNumeroPedido()+"','"+articulo.getCodigo()+"','"+articulo.getCantidad()+"');");
+				cerrarConexion();
 			}
 		} catch (Exception e) {	
 		}
 		System.out.println("Se ha guardado el pedido "+pedido.getNumeroPedido()+" con éxito.");
+		cerrarConexion();
+		return 0;
 	}
 
 	public boolean comprobarArticulo(String num_Articulo) {
@@ -206,9 +297,11 @@ public class Manejo_SQL {
 			if(Integer.parseInt(rs.getString(1)) < Integer.parseInt(articulo.getCantidad())){
 				System.err.println("No hay sufiente stock para atender el pedido con el articulo " + articulo.getCodigo());
 				System.err.println("Se ha cancelado este pedido.");
+				
 				throw new Exception();
 			}
 		} catch (Exception e) {
+			
 			throw new Exception();
 		}
 		
@@ -240,16 +333,22 @@ public class Manejo_SQL {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
 	public void cerrarConexion() {
+
 		try {
+			if(con.isClosed()) {
+				return;
+			}
+			s.close();
 			con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("No se ha podido cerrar la conexión de la base de datos.");
+			//e.printStackTrace();
 		}
 	}
 	
@@ -257,14 +356,14 @@ public class Manejo_SQL {
 	public void borrarPedido(Pedido pedido) {
 
 		try {
+			establecerConexion();
 			s.executeUpdate("DELETE FROM pedidos WHERE num_Pedido='"+pedido.getNumeroPedido()+"';");
 			s.executeUpdate("DELETE FROM rel_pedido_articulos WHERE num_Pedido='"+pedido.getNumeroPedido()+"';");
-			
-			
-			
+			cerrarConexion();
 		} catch (Exception e) {
 			System.err.println("No se ha podido eliminar la información de la base de datos.");
-			
+			//e.printStackTrace();
+			cerrarConexion();
 		}
 		
 		
@@ -273,6 +372,7 @@ public class Manejo_SQL {
 	
 	public void mostrarPedido(String numPedido) {
 		try {
+			establecerConexion();
 
 			ResultSet rs = s.executeQuery("SELECT * FROM mostrar_pedidos WHERE 'Número de pedido'='"+numPedido+"';");
 			
@@ -290,13 +390,16 @@ public class Manejo_SQL {
 				System.out.printf("%-25s%-25s%-25s%-25s%-25s%-25s\n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
 				
 			}
+			cerrarConexion();
 		} catch (Exception e) {
-			e.printStackTrace();
+			cerrarConexion();
+			//e.printStackTrace();
 		}
 	}
 	
 	public void mostrarPedidos() {
 		try {
+			establecerConexion();
 
 			ResultSet rs = s.executeQuery("SELECT * FROM mostrar_pedidos;");
 			
@@ -314,9 +417,32 @@ public class Manejo_SQL {
 				System.out.printf("%-25s%-25s%-25s%-25s%-25s%-25s\n", rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
 				
 			}
+			cerrarConexion();
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			cerrarConexion();
+			//e.printStackTrace();
 		}
+	}
+	
+	public void borrarBaseDeDatos() {
+		
+		try {
+			
+			establecerConexion();
+			s.execute("DELETE FROM pedidos");
+			s.execute("DELETE FROM rel_pedido_articulos");
+			s.execute("DELETE FROM clientes");
+			s.execute("DELETE FROM articulos");
+			
+			cargaInicial();
+			cerrarConexion();
+		} catch (SQLException e) {
+			System.err.println("Ha surgido un error borrando la base de datos.");
+			//e.printStackTrace();
+			cerrarConexion();
+		}
+		
 	}
 	
 }

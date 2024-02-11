@@ -31,7 +31,7 @@ public class Main {
 	}
 	
 	public static void menu() {
-		String[] opciones = {"1 Procesar nuevo pedido", "2 Mostrar pedidos", "3 Exportar pedido", "4. Generar informes", "5 Configuración", "6 Salir"};
+		String[] opciones = {"1. Procesar nuevo pedido", "2. Mostrar pedidos", "3. Exportar pedido", "4. Generar informes", "5. Configuración", "6. Borrar base de datos", "7. Salir"};
 		System.out.println("Bienvenido al sistema gestor de pedidos de AdiDAM");
 		for (String s : opciones) { System.out.println(s);}
 		
@@ -54,6 +54,10 @@ public class Main {
 			//Configuración
 			break;
 		case 6:
+			//Borrar base de datos
+			borrarBaseDeDatos();
+			break;
+		case 7:
 			//Salir
 			System.out.println("Saliendo.");
 			funcionando = false;
@@ -65,6 +69,22 @@ public class Main {
 		}
 
 		
+	}
+	
+	/**
+	 * Facilita la posibilidad de hacer pruebas a la hora de desarrollar el programa.
+	 * Borra todos los datos de la base de datos, dejándola como si estuviera recién creada.
+	 * Únicamente insertará los datos del primer archivo de pedidos
+	 */
+	public static void borrarBaseDeDatos() {
+		System.out.println("¿Estás seguro? Si borras los datos no habrá manera de recuperarlos.\nS/N");
+		switch (Input.leerString().toLowerCase()) {
+		case "s":
+			mDB.borrarBaseDeDatos();
+			break;
+		default:
+			break;
+		}
 	}
 	
 	public static void procesarNuevo() {
