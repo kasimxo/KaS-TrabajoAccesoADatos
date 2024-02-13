@@ -12,6 +12,7 @@ import java.util.List;
 import dataClasses.Articulo;
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
+import dataClasses.Cliente;
 import main.Main;
 import utils.Input;
 
@@ -446,7 +447,86 @@ public class Manejo_SQL {
 	}
 	
 	public List<Pedido> exportarPedidos() {
-		return null;
+		try {
+			establecerConexion();
+			
+			List<Pedido> pedidos = new ArrayList<Pedido>();
+			
+			String numeroCliente = "";
+			
+			ResultSet rsPedidos = s.executeQuery("SELECT num_Pedido, num_Cliente, fecha FROM pedidos;");
+			
+			while (rsPedidos.next()) {
+				
+				Pedido p = new Pedido();
+				
+				p.setNumeroPedido(rsPedidos.getString(1));
+				
+				numeroCliente = rsPedidos.getString(2);
+				
+				p.setFecha(rsPedidos.getString(3));
+				
+				pedidos.add(p);
+				
+			}
+			
+			//Se necesitan hacer las querys por partes para evitar problemas con sqlite
+			
+			for (Pedido p : pedidos) {
+				
+				ResultSet rsCliente = s.executeQuery("SELECT * FROM clientes WHERE num_Cliente='"+numeroCliente+"';");
+				
+				
+				//Sacamos el cliente de ese pedido
+				while (rsCliente.next()) {
+					// Solo debería devolver un único cliente
+					Cliente c = new Cliente();
+					
+					c.setNumeroCliente(rsCliente.getString(1));
+					c.setNombre(rsCliente.getString(2));
+					c.setApellidos(rsCliente.getString(3));
+					c.setTelefono(rsCliente.getString(4));
+					c.setDireccion(rsCliente.getString(5));
+					c.setEmpresa(rsCliente.getString(6));
+					
+					// Añadimos el cliente al pedido
+					p.setCliente(c);
+				}
+			}
+			
+			for (Pedido p : pedidos) {
+				
+				//Sacamos todos los artículos de ese pedido
+				ResultSet rsArticulos = s.executeQuery("SELECT a.num_Articulo, rpa.cantidad, a.descripcion, a.categoria, a.proveedor, a.precio FROM rel_pedido_articulos rpa JOIN articulos a on (rpa.num_Articulo=a.num_Articulo) WHERE rpa.num_Pedido='"+p.getNumeroPedido()+"';");
+				
+				List<Articulo> articulos = new ArrayList<Articulo>();
+				
+				while (rsArticulos.next()) {
+					//Aquí si que puede devolver más de un articulo
+					Articulo art = new Articulo();
+					
+					art.setCodigo(rsArticulos.getString(1));
+					art.setCantidad(rsArticulos.getString(2)); // Cantidad de este artículo pedida, no STOCK
+					art.setDescripcion(rsArticulos.getString(3));
+					art.setCategoria(rsArticulos.getString(4));
+					art.setProveedor(rsArticulos.getString(5));
+					art.setPrecio(rsArticulos.getString(6));
+					
+					articulos.add(art);
+				}
+				
+				
+				p.setArticulos(articulos);
+			}
+			
+			cerrarConexion();
+			return pedidos;
+		} catch (Exception e) {
+			System.out.println("No se han podido exportar los pedidos.");
+			e.printStackTrace();
+			cerrarConexion();
+			return null;
+		}
 	}
 	
 	

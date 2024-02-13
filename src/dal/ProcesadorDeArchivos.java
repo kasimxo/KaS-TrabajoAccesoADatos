@@ -1,5 +1,7 @@
 package dal;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -169,6 +171,23 @@ public class ProcesadorDeArchivos {
 				
 				}
 			}
+			
+			//WINDOWS
+			//File f = new File(".\\files\\archivosEntrada\\");
+			
+			//LINUX
+			File f = new File("./files/archivosProcesados/");
+			
+			String destino = f.toPath()+archivo.getName();
+			
+			
+			
+			//Movemos el archivo a la carpeta de procesados
+			Files.move(archivo.toPath(), Paths.get(destino));
+			
+			
+			
+			//archivo
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -3,17 +3,18 @@ package dataClasses;
 public class Articulo {
 	
 	private String codigo;
-	private String cantidad;
+	private String stock;
 	private String categoria;
 	private String proveedor;
 	private String descripcion;
+	private String precio;
 	
 	public Articulo() {};
 	
 	public Articulo(String codigo, String cantidad) {
 		super();
 		this.codigo = codigo;
-		this.cantidad = cantidad;
+		this.stock = cantidad;
 	}
 	public String getCodigo() {
 		return codigo;
@@ -22,14 +23,14 @@ public class Articulo {
 		this.codigo = codigo;
 	}
 	public String getCantidad() {
-		return cantidad;
+		return stock;
 	}
 	public void setCantidad(String cantidad) {
-		this.cantidad = cantidad;
+		this.stock = cantidad;
 	}
 	@Override
 	public String toString() {
-		return "\tArticulo:\n\t\tCodigo=" + codigo + "\n\t\tCantidad: " + cantidad+"\n";
+		return "\tArticulo:\n\t\tCodigo=" + codigo + "\n\t\tCantidad: " + stock+"\n";
 	}
 
 	public String getProveedor() {
@@ -54,6 +55,14 @@ public class Articulo {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	public String getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(String precio) {
+		this.precio = precio;
 	}
 	
 }

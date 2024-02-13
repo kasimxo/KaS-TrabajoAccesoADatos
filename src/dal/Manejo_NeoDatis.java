@@ -2,12 +2,15 @@ package dal;
 
 import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
+import org.neodatis.odb.Objects;
 
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
+import dataClasses.Articulo;
 import main.Main;
 
 public class Manejo_NeoDatis {
@@ -31,17 +34,37 @@ public class Manejo_NeoDatis {
 			
 			sincronizacion();
 			
-			
-			
 		} catch (Exception e) {
 			System.err.println("No se ha podido establecer conexión con la base de datos NeoDatis.");
 		}
-		
-		
+
+	}
+	
+	/**
+	 * Este método exporta todos los articulos solicitados y su cantidad solicitada
+	 */
+	public List<LineaPedido> exportarArticulosYCantidad() {
+		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
+		try {
+			establecerConexion();
+			
+			Objects<LineaPedido> objetos = odb.getObjects(LineaPedido.class);
+			
+			objetos.forEach((O) -> {
+				articulos.add((LineaPedido) O);
+			});
+			
+			cerrarConexion();
+			return articulos;
+		} catch (Exception e) {
+			System.out.println("Se ha producido un error exportando los articulos por cantidad de NeoDatis.");
+			return null;
+		}
 	}
 	
 	/**
 	 * Este método exporta la información actual de la bbdd SQL y la inserta en la bbdd NeoDatis
+	 * Quizás habría que prevenir duplicados(?)
 	 */
 	public void sincronizacion() {
 		cargaLineasPedido();

@@ -1,6 +1,7 @@
 package main;
 import java.util.Scanner;
 
+import dal.GeneradorInformes;
 import dal.Manejo_NeoDatis;
 import dal.Manejo_SQL;
 import dal.ProcesadorDeArchivos;
@@ -31,7 +32,15 @@ public class Main {
 	}
 	
 	public static void menu() {
-		String[] opciones = {"1. Procesar nuevo pedido", "2. Mostrar pedidos", "3. Exportar pedido", "4. Generar informes", "5. Configuración", "6. Borrar base de datos", "7. Salir"};
+		String[] opciones = {
+				"1. Procesar nuevo pedido",
+				"2. Mostrar pedidos",
+				"3. Generar informes",
+				"4. Configuración",
+				"5. Borrar base de datos",
+				"6. Salir"
+				};
+		
 		System.out.println("Bienvenido al sistema gestor de pedidos de AdiDAM");
 		for (String s : opciones) { System.out.println(s);}
 		
@@ -41,35 +50,79 @@ public class Main {
 			procesarNuevo();
 			break;
 		case 2:
-			//Mostrar pedidos
+			//Mostrar todos los pedidos
 			mostrarPedidos();
 			break;
 		case 3:
-			//Exportar pedido
+			//Generar informes
+			menuInformes();
 			break;
 		case 4:
-			//Generar informes
-			break;
-		case 5:
 			//Configuración
 			break;
-		case 6:
+		case 5:
 			//Borrar base de datos
 			borrarBaseDeDatos();
 			break;
-		case 7:
+		case 6:
 			//Salir
-			System.out.println("Saliendo.");
+			System.out.println("Saliendo");
 			funcionando = false;
 			mDB.cerrarConexion();
 			break;
 		default:
+			System.out.println("Opción no reconocida");
 			break;
 		
 		}
 
+	}
+
+	public static void menuInformes() {
+		String[] informes = {
+				"1. Informe del número de pedidos recibidos y procesados correctamente",
+				"2. Informe del número de líneas de pedido recibidas",
+				"3. Informe de los artículos únicos que se han solicitado por cantidad de pedidos",
+				"4. Informe de número de pedidos por cliente",
+				"5. Informe de las unidades de cada artículo por servir",
+				"6. Informe del total de unidades pedidas por pedido",
+				"7. Informe de media de artículos por pedido recibidos",
+				"8. Informe resumen de pedidos por cliente y fecha", //Opcional 1
+				"9. Informe de artículos por servir" //Opcional 2: Informe artículos por cantidad
+			};
+		System.out.println("Indica el tipo de informe que desea generar:");
+		for(String informe : informes) {
+			System.out.println(informe);
+		}
+		
+		switch (Input.leerInt()) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			GeneradorInformes.informeArticulosPorCantidad();
+			break;
+		default:
+			System.out.println("Opción no reconocida");
+			break;
+		}
 		
 	}
+	
+	
 	
 	/**
 	 * Facilita la posibilidad de hacer pruebas a la hora de desarrollar el programa.
