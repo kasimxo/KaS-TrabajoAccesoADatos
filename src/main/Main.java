@@ -111,6 +111,7 @@ public class Main {
 			break;
 		case 5:
 			//5. Informe de las unidades de cada artículo por servir
+			GeneradorInformes.informeUnidadesPedidasPorArticulo();
 			break;
 		case 6:
 			//6. Informe del total de unidades pedidas por pedido

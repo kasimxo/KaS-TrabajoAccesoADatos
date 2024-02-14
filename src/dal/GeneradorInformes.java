@@ -115,6 +115,55 @@ public class GeneradorInformes {
 		
 	}
 	
+
+	public static void informeUnidadesPedidasPorArticulo() {
+		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
+		
+		if(lineasPedido == null) {
+			System.out.println("No se ha podido generar el informe de la unidades pedidas de cada artículo");
+			return;
+		}
+		
+		String titulo = "Número de unidades pedidas por artículo";
+		
+		List<String> cabecera = new ArrayList<String>();
+		cabecera.add("Código de artículo");
+		cabecera.add("Unidades pedidas");
+		
+		String cabeceraPrint = String.format("%-18s %-18s\n", "Código de artículo", "Unidades pedidas");
+		System.out.print(cabeceraPrint);
+		
+		//Generamos un mapa de los artículos, de este modo resulta mas sencillo contar el total de unidades
+		// K, V -> K=Código de artículo, V=Unidades pedidas
+		Map<String, Integer> mapa = new HashMap<String, Integer>();
+		
+		for(LineaPedido lp : lineasPedido) {
+			if(mapa.containsKey(lp.getNum_Articulo())) {
+				int cantidad = mapa.get(lp.getNum_Articulo());
+				cantidad += Integer.parseInt(lp.getCantidad());
+				mapa.put(lp.getNum_Articulo(), cantidad);
+			} else {
+				mapa.put(lp.getNum_Articulo(), Integer.parseInt(lp.getCantidad()));
+			}
+		}
+		
+		List<List<String>> texto = new ArrayList<List<String>>();
+
+		mapa.forEach( (K, V) -> {
+			List<String> linea = new ArrayList<String>();
+			linea.add(K);
+			linea.add(Integer.toString(V));
+			
+			String lineaPrint = String.format("%-18s %-18s\n", K, Integer.toString(V));
+			System.out.print(lineaPrint);
+			
+			texto.add(linea);
+		});
+		
+		guardarPdf(titulo, null, cabecera, texto);
+		
+	}
+	
 	public static void informeLineasDePedido() {
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		

@@ -40,6 +40,13 @@ public class ProcesadorDeArchivos {
 		File f = new File("./files/archivosEntrada/");
 		
 		File[] archivos = f.listFiles();
+		
+		//Comprobamos cuantos archivos hay por si no hay ninguno
+		if(archivos.length<1) {
+			System.out.println("No se ha encontrado ningún archivo para procesar");
+			return;
+		}
+		
 		System.out.println("¿Qué archivo quieres procesar? Introduce el número del archivo o 'T' para procesarlos todos");
 		for (int i = 1; i<=archivos.length; i++) {
 			System.out.printf("%d - %s\n", i, archivos[i-1].getName());
