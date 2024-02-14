@@ -1,12 +1,14 @@
 package dal;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
+import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
 
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
@@ -97,6 +99,23 @@ public class Manejo_NeoDatis {
 		} catch (Exception e) {
 			System.out.println("No se han podido insertar los pedidos en la bbdd NeoDatis.");
 		}
+	}
+	
+	public String numeroLineasPedido() {
+		try {
+			establecerConexion();
+			
+			BigInteger a = odb.count(new CriteriaQuery(LineaPedido.class));
+			
+			cerrarConexion();
+			return a.toString();
+		} catch (Exception e) {
+			System.out.println("No se han podido contar las líneas de pedido");
+			cerrarConexion();
+
+			return null;
+		}
+		
 	}
 	
 	public List<LineaPedido> exportarLineasDePedido(){

@@ -182,10 +182,16 @@ public class GeneradorInformes {
 		cabecera.add("Precio/ud.");
 		cabecera.add("Precio total");
 		
-		String introduccion = String.format("El número de líneas de pedido recibidas es: %d\n", lineasPedido.size());
+		String numero = Main.mND.numeroLineasPedido();
+		
+		if(numero == null) {
+			numero = Integer.toString(lineasPedido.size());
+		}
+		
+		String introduccion = String.format("El número de líneas de pedido recibidas es: %s\n", numero);
 		System.out.print(introduccion);
 		 
-		String cabeceraPrint = String.format("%-18s %-18s %-18s %-18s %-18s %-18s\n", "Cantidad", "N.º de pedido", "N.º de artículo", "Nombre-Categoría", "Precio/ud.", "Precio total");
+		String cabeceraPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s\n", "Cantidad", "N.º de pedido", "N.º de artículo", "Nombre-Categoría", "Precio/ud.", "Precio total");
 		System.out.print(cabeceraPrint);
 		
 		List<List<String>> texto = new ArrayList<List<String>>();
@@ -201,7 +207,7 @@ public class GeneradorInformes {
 			linea.add(lp.getPrecio_ud());
 			linea.add(lp.getPrecio_tot());
 			
-			String lineaPrint = String.format("%-18s %-18s %-18s %-18s %-18s %-18s\n",
+			String lineaPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s\n",
 					lp.getCantidad(),
 					lp.getNum_Pedido(),
 					lp.getNum_Articulo(),
