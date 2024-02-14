@@ -36,6 +36,18 @@ public class Input {
 		return input;
 	}
 	
+	public static boolean aceptarCancelar() {
+		String input = sc.nextLine();
+		
+		switch(input.toLowerCase().charAt(0)) {
+		case 's':
+			return true;
+		default:
+			return false;
+		}
+		
+	}
+	
 	public static void closeScanner() {
 		sc.close();
 	} 

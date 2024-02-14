@@ -11,6 +11,7 @@ import org.neodatis.odb.Objects;
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
 import dataClasses.Articulo;
+import dataClasses.Cliente;
 import main.Main;
 
 public class Manejo_NeoDatis {
@@ -41,7 +42,7 @@ public class Manejo_NeoDatis {
 	}
 	
 	/**
-	 * Este método exporta todos los articulos solicitados y su cantidad solicitada
+	 * Exporta todos los articulos solicitados y su cantidad solicitada
 	 */
 	public List<LineaPedido> exportarArticulosYCantidad() {
 		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
@@ -71,11 +72,15 @@ public class Manejo_NeoDatis {
 		cargarPedidos();	
 	}
 	
+	/**
+	 * Extrae los datos de los pedidos de la base de datos de sqlite y
+	 * y los inserta en la base de datos de NeoDatis.
+	 */
 	public void cargarPedidos() {
 		try {
 			establecerConexion();
 			
-			List<Pedido> pedidos = Main.mDB.exportarPedidos();
+			List<Pedido> pedidos = Main.mSQL.exportarPedidos();
 			
 			if(pedidos == null) {
 				System.out.println("No se han podido insertar los pedidos en la bbdd NeoDatis.");
@@ -94,11 +99,55 @@ public class Manejo_NeoDatis {
 		}
 	}
 	
+	public List<LineaPedido> exportarLineasDePedido(){
+		try {
+			establecerConexion();
+			
+			List<LineaPedido> lineasPedido = new ArrayList<LineaPedido>();
+			
+			Objects<LineaPedido> lineasPedidoExportado = odb.getObjects(LineaPedido.class);
+			
+			for(LineaPedido p : lineasPedidoExportado) {
+				lineasPedido.add(p);
+			}
+			
+			cerrarConexion();
+			return lineasPedido;
+		} catch (Exception e) {
+			cerrarConexion();
+			return null;
+		}
+	}
+	
+	public List<Pedido> exportarPedidos(){
+		try {
+			establecerConexion();
+			
+			List<Pedido> pedidos = new ArrayList<Pedido>();
+			
+			Objects<Pedido> pedidosExportado = odb.getObjects(Pedido.class);
+			
+			for(Pedido p : pedidosExportado) {
+				pedidos.add(p);
+			}
+			
+			cerrarConexion();
+			return pedidos;
+		} catch (Exception e) {
+			cerrarConexion();
+			return null;
+		}
+	}
+	
+	/**
+	 * Extrae los datos de las líneas de pedido de la base de datos de sqlite y
+	 * y los inserta en la base de datos de NeoDatis.
+	 */
 	public void cargaLineasPedido() {
 		try {
 			establecerConexion();
 			
-			List<LineaPedido> lineas = Main.mDB.exportarLineasPedido();
+			List<LineaPedido> lineas = Main.mSQL.exportarLineasPedido();
 			
 			if (lineas == null) {
 				System.out.println("No se han podido insertar las líneas de pedido en la bbdd NeoDatis.");
@@ -132,6 +181,59 @@ public class Manejo_NeoDatis {
 			odb.close();
 		} catch (Exception e) {
 			System.out.println("No se ha podido cerrar la conexión de la base de datos NeoDatis.");
+		}
+	}
+	
+	public void borrarLineasPedido() {
+		establecerConexion();
+		//Borramos lineas de pedido
+		Objects lineas = odb.getObjects(LineaPedido.class);
+		for (Object lp : lineas) {
+			odb.delete(lp);
+		}
+		cerrarConexion();
+	}
+	
+	public void borrarPedidos() {
+
+		establecerConexion();
+		//Borramos los pedidos
+		Objects pedidos = odb.getObjects(Pedido.class);
+		for (Object p : pedidos) {
+			odb.delete(p);
+		}
+		
+		//Al borrar los pedidos, no borra ni al ciente ni los articulos
+		//Borramos clientes
+		Objects clientes = odb.getObjects(Cliente.class);
+		for(Object c : clientes) {
+			odb.delete(c);
+		}
+		
+		//Borramos los articulos
+		Objects articulos = odb.getObjects(Articulo.class);
+		for(Object a : articulos) {
+			odb.delete(a);
+		}
+		cerrarConexion();
+	}
+	
+	/**
+	 * Borra todo lo que tiene la base de datos NeoDatis
+	 */
+	public void borrarBaseDeDatos() {
+		try {
+			establecerConexion();
+			
+			borrarLineasPedido();
+			borrarPedidos();
+	
+			cerrarConexion();
+			sincronizacion();
+			System.out.println("Se ha borrado la base de datos NeoDatis con éxito");
+		} catch (Exception e) {
+			System.out.println("Ha surgido un error borrando la base de datos");
+			cerrarConexion();
 		}
 	}
 	

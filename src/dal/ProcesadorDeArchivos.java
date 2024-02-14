@@ -53,23 +53,35 @@ public class ProcesadorDeArchivos {
 			System.out.println("Se han procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
 
 			for(List<Pedido> pedido : listadoPedidos) {
-				Main.mDB.insertNuevosPedidos(pedido);
+				Main.mSQL.insertNuevosPedidos(pedido);
 			}
 		} else {
 			try {
 				int numero = Integer.parseInt(opcion);
 				List<Pedido> pedido = procesar(archivos[numero-1]);
 				
+				if(pedido == null) {
+					System.out.println("No se ha podido procesar el archivo.");
+					return;
+				}
+				
 				System.out.println("Se ha procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
 				
-				Main.mDB.insertNuevosPedidos(pedido);
+				Main.mSQL.insertNuevosPedidos(pedido);
 			} catch (Exception e) {
 				System.err.println("Input no reconocido");
 			}
 		}
 	}
 	
-	public boolean validarArchivo(Document doc) {
+	/**
+	 * Valida el archivo con un esquema xsd
+	 * Si el archivo no cumple con el formato correcto, devuelve false
+	 * @param filename
+	 * @param doc
+	 * @return
+	 */
+	public boolean validarArchivo(String filename, Document doc) {
 
 		try {
 			//SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.);
@@ -85,14 +97,14 @@ public class ProcesadorDeArchivos {
 			Validator validator = schema.newValidator();
 		
 			validator.validate(new DOMSource(doc));
-			System.out.println("El archivo cumple con el formato correcto.");
+			System.out.println("El archivo "+ filename +" cumple con el formato correcto.");
 			return true;
 			
 		} catch (SAXException e) {
-			System.out.println("El archivo no cumple con el formato correcto.");
+			System.out.println("El archivo "+ filename +" no cumple con el formato correcto.");
 			return false;
 		} catch (Exception e) {
-			System.out.println("No se ha podido verificar que el archivo cumpla con el formato correcto.");
+			System.out.println("No se ha podido verificar que el archivo "+ filename +" cumpla con el formato correcto.");
 			return false;
 		}
 		
@@ -108,14 +120,19 @@ public class ProcesadorDeArchivos {
 			List<Pedido> pedidos = procesar(f);
 			
 			if(pedidos != null) {
-				listadoPedidos.add(procesar(f));
+				listadoPedidos.add(pedidos);
+			} else {
+				System.out.println("No se ha podido procesar el archivo.");
 			}
+			
 		}
 		return listadoPedidos;
 	}
 	
 	/*
 	 * Procesamos un único archivo xml
+	 * Al terminar de procesar el archivo, 
+	 * lo mueve al directorio de procesados
 	 */
 	public List<Pedido> procesar(File archivo) {
 		
@@ -126,8 +143,13 @@ public class ProcesadorDeArchivos {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(archivo);
 			
-			if(!validarArchivo(doc)) {
-				return null;
+			//Comprueba si el archivo cumple el formato correcto o no.
+			//Si no lo cumple, no procesa el archivo
+			if(!validarArchivo(archivo.getName(),doc)) {
+				System.out.println("Si se procesa este archivo, podrían producirse errores inesperados.\n¿Procesarlo igualmente?(S/N):");
+				if(!Input.aceptarCancelar()) {
+					return null;
+				}
 			}
 			
 			Element root = (Element) doc.getDocumentElement();
@@ -176,10 +198,9 @@ public class ProcesadorDeArchivos {
 			//File f = new File(".\\files\\archivosEntrada\\");
 			
 			//LINUX
-			File f = new File("./files/archivosProcesados/");
+			File copia = new File("./files/archivosProcesados/");
 			
-			String destino = f.toPath()+archivo.getName();
-			
+			String destino = copia.getAbsolutePath()+"/"+archivo.getName();
 			
 			
 			//Movemos el archivo a la carpeta de procesados

@@ -439,8 +439,10 @@ public class Manejo_SQL {
 			
 			cargaInicial();
 			cerrarConexion();
+			
+			System.out.println("Se ha borrado la base de datos sqlite con éxito");
 		} catch (SQLException e) {
-			System.err.println("Ha surgido un error borrando la base de datos.");
+			System.err.println("Ha surgido un error borrando la base de datos");
 			//e.printStackTrace();
 			cerrarConexion();
 		}

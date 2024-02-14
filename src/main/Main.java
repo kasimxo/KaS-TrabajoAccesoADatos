@@ -12,7 +12,7 @@ public class Main {
 	public static boolean funcionando = true;
 	
 	// Clase que maneja la conexión y peticiones con la bbdd SQLite
-	public static Manejo_SQL mDB;
+	public static Manejo_SQL mSQL;
 	
 	// Clase que maneja la conexión y peticiones con la bbdd NeoDatis
 	public static Manejo_NeoDatis mND;
@@ -23,7 +23,7 @@ public class Main {
 		//Con esto iniciamos la clase que manejará el input
 		new Input();
 		
-		mDB = new Manejo_SQL();
+		mSQL = new Manejo_SQL();
 		mND = new Manejo_NeoDatis();
 		
 		while (funcionando) {
@@ -68,7 +68,7 @@ public class Main {
 			//Salir
 			System.out.println("Saliendo");
 			funcionando = false;
-			mDB.cerrarConexion();
+			mSQL.cerrarConexion();
 			break;
 		default:
 			System.out.println("Opción no reconocida");
@@ -97,22 +97,33 @@ public class Main {
 		
 		switch (Input.leerInt()) {
 		case 1:
+			//1. Informe del número de pedidos recibidos y procesados correctamente
 			break;
 		case 2:
+			//2. Informe del número de líneas de pedido recibidas
+			GeneradorInformes.informeLineasDePedido();
 			break;
 		case 3:
+			//3. Informe de los artículos únicos que se han solicitado por cantidad de pedidos
 			break;
 		case 4:
+			//4. Informe de número de pedidos por cliente
 			break;
 		case 5:
+			//5. Informe de las unidades de cada artículo por servir
 			break;
 		case 6:
+			//6. Informe del total de unidades pedidas por pedido
 			break;
 		case 7:
+			//7. Informe de media de artículos por pedido recibidos
 			break;
 		case 8:
+			//Opcional I: 8. Informe resumen de pedidos por cliente y fecha
+			GeneradorInformes.informePedidoClienteFecha();
 			break;
 		case 9:
+			//Opcional II: 9. Informe de artículos por servir
 			GeneradorInformes.informeArticulosPorCantidad();
 			break;
 		default:
@@ -127,13 +138,15 @@ public class Main {
 	/**
 	 * Facilita la posibilidad de hacer pruebas a la hora de desarrollar el programa.
 	 * Borra todos los datos de la base de datos, dejándola como si estuviera recién creada.
-	 * Únicamente insertará los datos del primer archivo de pedidos
+	 * Únicamente insertará los datos del primer archivo de pedidos 
+	 * También sincroniza NeoDatis con los datos de sqlite
 	 */
 	public static void borrarBaseDeDatos() {
 		System.out.println("¿Estás seguro? Si borras los datos no habrá manera de recuperarlos.\nS/N");
 		switch (Input.leerString().toLowerCase()) {
 		case "s":
-			mDB.borrarBaseDeDatos();
+			mSQL.borrarBaseDeDatos();
+			mND.borrarBaseDeDatos();
 			break;
 		default:
 			break;
@@ -150,7 +163,7 @@ public class Main {
 	}
 	
 	public static void mostrarPedidos() {
-		mDB.mostrarPedidos();
+		mSQL.mostrarPedidos();
 		
 	}
 	
