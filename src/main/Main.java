@@ -114,6 +114,7 @@ public class Main {
 			break;
 		case 6:
 			//6. Informe del total de unidades pedidas por pedido
+			GeneradorInformes.informePedidoUnidadesPedidas();
 			break;
 		case 7:
 			//7. Informe de media de artículos por pedido recibidos

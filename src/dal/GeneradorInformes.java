@@ -80,6 +80,41 @@ public class GeneradorInformes {
 		
 	}
 	
+	public static void informePedidoUnidadesPedidas() {
+		List<Pedido> pedidos = Main.mND.exportarPedidos();
+		
+		String titulo = "Número de unidades pedidas por pedido";
+		
+		List<String> cabecera = new ArrayList<String>();
+		cabecera.add("Pedido");
+		cabecera.add("Unidades pedidas");
+		
+		String cabeceraPrint = String.format("%-18s %-18s\n", "Pedido", "Unidades pedidas");
+		System.out.print(cabeceraPrint);
+		
+		List<List<String>> texto = new ArrayList<List<String>>();
+		
+		for (Pedido p : pedidos) {
+			List<String> linea = new ArrayList<String>();
+			linea.add(p.getNumeroPedido());
+			
+			int cantidad = 0;
+			
+			for (Articulo a : p.getArticulos()) {
+				cantidad += Integer.parseInt(a.getCantidad());
+			}
+			
+			String lineaPrint = String.format("%-18s %-18s\n", p.getNumeroPedido(), Integer.toString(cantidad));
+			System.out.print(lineaPrint);
+			
+			linea.add(Integer.toString(cantidad));
+			texto.add(linea);
+		}
+		
+		guardarPdf(titulo, null, cabecera, texto);
+		
+	}
+	
 	public static void informeLineasDePedido() {
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		
