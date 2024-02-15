@@ -552,7 +552,7 @@ public class Manejo_SQL {
 			List<LineaPedido> exportacion = new ArrayList<LineaPedido>();
 			
 			while (rs.next()) {
-				exportacion.add(new LineaPedido(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
+				exportacion.add(new LineaPedido(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
 			}
 			
 			cerrarConexion();

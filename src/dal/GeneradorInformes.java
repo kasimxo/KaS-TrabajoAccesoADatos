@@ -52,10 +52,10 @@ public class GeneradorInformes {
 		for(LineaPedido lp : articulos) {
 			if (procesado.containsKey(lp.getNum_Articulo())) {
 				Integer cantidadActual = procesado.get(lp.getNum_Articulo());
-				cantidadActual += Integer.parseInt(lp.getCantidad());
+				cantidadActual += lp.getCantidad();
 				procesado.put(lp.getNum_Articulo(), cantidadActual);
 			} else {
-				procesado.put(lp.getNum_Articulo(), Integer.parseInt(lp.getCantidad()));
+				procesado.put(lp.getNum_Articulo(), lp.getCantidad());
 			}
 		}
 		
@@ -151,10 +151,10 @@ public class GeneradorInformes {
 		for(LineaPedido lp : lineasPedido) {
 			if(mapa.containsKey(lp.getNum_Articulo())) {
 				int cantidad = mapa.get(lp.getNum_Articulo());
-				cantidad += Integer.parseInt(lp.getCantidad());
+				cantidad += lp.getCantidad();
 				mapa.put(lp.getNum_Articulo(), cantidad);
 			} else {
-				mapa.put(lp.getNum_Articulo(), Integer.parseInt(lp.getCantidad()));
+				mapa.put(lp.getNum_Articulo(), lp.getCantidad());
 			}
 		}
 		
@@ -329,7 +329,7 @@ public class GeneradorInformes {
 			
 			List<String> linea = new ArrayList<String>();
 			
-			linea.add(lp.getCantidad());
+			linea.add(Integer.toString(lp.getCantidad()));
 			linea.add(lp.getNum_Pedido());
 			linea.add(lp.getNum_Articulo());
 			linea.add(lp.getDescripcion_Categoria());

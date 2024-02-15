@@ -2,27 +2,27 @@ package dataClasses;
 
 public class LineaPedido {
 
-	private String cantidad;
+	private int cantidad;
 	private String num_Pedido;
 	private String num_Articulo;
 	private String descripcion_Categoria;
 	private String precio_ud;
 	private String precio_tot;
 	
-	public LineaPedido(String cantidad, String num_Pedido, String num_Articulo, String descripcion_categoria, String precio_ud) {
+	public LineaPedido(int cantidad, String num_Pedido, String num_Articulo, String descripcion_categoria, String precio_ud) {
 		this.cantidad = cantidad;
 		this.num_Pedido = num_Pedido;
 		this.num_Articulo = num_Articulo;
 		this.descripcion_Categoria = descripcion_categoria;
 		this.precio_ud = precio_ud;
-		this.precio_tot = Integer.toString(Integer.parseInt(cantidad)*Integer.parseInt(precio_ud));
+		this.precio_tot = Integer.toString(cantidad*Integer.parseInt(precio_ud));
 	}
 
-	public String getCantidad() {
+	public int getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(String cantidad) {
+	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
 
