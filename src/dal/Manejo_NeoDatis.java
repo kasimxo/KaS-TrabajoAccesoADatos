@@ -192,6 +192,37 @@ public class Manejo_NeoDatis {
 		
 	}
 	
+	public List<List<String>> exportarPedidosPorArticulo(){
+		try {
+			establecerConexion();
+			
+			List<List<String>> texto = new ArrayList<List<String>>();
+			
+			
+			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("num_Articulo").count("num_Pedido").groupBy("num_Articulo")); //Cantidad de articulos por pedido
+
+			while (valores.hasNext()) {
+				ObjectValues ov = valores.next();
+				
+				List<String> linea = new ArrayList<String>();
+				
+				linea.add((String) ov.getByIndex(0));
+				
+				BigInteger cantidad = (BigInteger) ov.getByIndex(1);
+				
+				linea.add(cantidad.toString());
+
+				texto.add(linea);
+			}
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			System.out.println("No se ha podido exportar el número de pedidos por artículo");
+			return null;
+		}
+	}
+	
 	public List<Cliente> exportarClientes(){
 		try {
 			establecerConexion();

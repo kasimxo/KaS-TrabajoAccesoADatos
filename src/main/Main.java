@@ -106,6 +106,7 @@ public class Main {
 			break;
 		case 3:
 			//3. Informe de los artículos únicos que se han solicitado por cantidad de pedidos
+			GeneradorInformes.informePedidosPorArticulo();
 			break;
 		case 4:
 			//4. Informe de número de pedidos por cliente

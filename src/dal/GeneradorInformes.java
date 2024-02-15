@@ -77,7 +77,7 @@ public class GeneradorInformes {
 			texto.add(linea);
 		});
 		
-		guardarPdf(titulo, null, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
 	}
 	
@@ -112,7 +112,7 @@ public class GeneradorInformes {
 			texto.add(linea);
 		}
 		
-		guardarPdf(titulo, null, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
 	}
 	
@@ -161,7 +161,7 @@ public class GeneradorInformes {
 			texto.add(linea);
 		});
 		
-		guardarPdf(titulo, null, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
 	}
 	
@@ -195,7 +195,7 @@ public class GeneradorInformes {
 			System.out.print(lineaPrint);
 		}
 		
-		guardarPdf(titulo, null, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 	}
 	
 	public static void informePedidosRecibidos() {
@@ -271,7 +271,7 @@ public class GeneradorInformes {
 			
 		}
 			
-		guardarPdf(titulo, introduccion, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, introduccion, cabecera, texto);
 	}
 	
 	public static void informeLineasDePedido() {
@@ -330,7 +330,7 @@ public class GeneradorInformes {
 		}
 		
 		
-		guardarPdf(titulo, introduccion, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, introduccion, cabecera, texto);
 	}
 	
 	public static void informePedidoClienteFecha() {
@@ -365,103 +365,48 @@ public class GeneradorInformes {
 			texto.add(linea);
 		}
 
-		guardarPdf(titulo, null, cabecera, texto);
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
 	}
 	
-		public static void informeMediaArticulosPorPedido() {
-
-			String titulo = "Media de artículos por pedido";
-			
-			String media = Main.mND.mediaArticulosPorPedido();
-			
-			String introduccion = String.format("La media de artículos solicitados por pedido recibido es: %s\n", media);
-			
-			System.out.print(introduccion);
-			
-			guardarPdf(titulo, introduccion, null, null);
-		}
-	
-	
-	
-	/**
-	 * Crea un archivo pdf con toda la información del informe en formato tabla
-	 * @param titulo El nombre que tendrá el archivo creado
-	 * @param encabezado Opcional, se pone antes de la tabla con el contenido del informe
-	 * @param cabecera El título de las columnas de la tabla
-	 * @param texto Todo el contenido de la tabla del informe
-	 */
-	public static void guardarPdf(String titulo, String encabezado, List<String> cabecera, List<List<String>> texto) {
+	public static void informePedidosPorArticulo() {
 		
-		//WINDOWS
-		//File f = new File(".\\files\\archivosEntrada\\");
+		List<List<String>> texto = Main.mND.exportarPedidosPorArticulo();
 		
-		//LINUX
-		File f = new File("./files/informes/"+titulo.replace(' ', '_')+".pdf");
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		Document document = new Document();
-		
-		try {
-
-			PdfWriter pdf = PdfWriter.getInstance(document, new FileOutputStream(f.getAbsolutePath()));
-			
-			document.open();
-			
-			//Creamos el párrado con los datos de la empresa y le damos estilo
-			Font destacado = new Font(Font.TIMES_ROMAN, 18, Font.ITALIC);
-			Phrase empresa = new Phrase("AdiDam S.L\n", destacado);
-			Font normal = new Font(Font.TIMES_ROMAN, 14, Font.NORMAL);
-			Phrase fecha = new Phrase(Calendar.getInstance().getTime().toString(), normal);
-			Paragraph cabeceraEmpresa = new Paragraph();
-			cabeceraEmpresa.setAlignment(Element.ALIGN_RIGHT);
-			cabeceraEmpresa.add(empresa);
-			cabeceraEmpresa.add(fecha);
-			cabeceraEmpresa.add("\n\n\n\n"); // Añadimos unos saltos de línea para separar la información
-			document.add(cabeceraEmpresa);
-			
-			Font subrayado = new Font(Font.TIMES_ROMAN, 16, Font.BOLD);
-			
-			//Aqui comprobamos si hay algún encabezado para agregarlo
-			if (encabezado != null) {
-				Phrase introduccion = new Phrase(encabezado, normal);
-				Paragraph parrafoIntroduccion = new Paragraph(introduccion);
-				parrafoIntroduccion.add("\n"); //Añade un salto de línea para separar los componentes
-				parrafoIntroduccion.setAlignment(Element.ALIGN_LEFT);
-				document.add(parrafoIntroduccion);
-			}
-			
-			if(cabecera != null && texto != null) {
-				//Creamos la tabla que contendrá todo el informe
-				PdfPTable table = new PdfPTable(cabecera.size());
-				for(String th : cabecera) {
-					Phrase textoCelda = new Phrase(th, normal);
-					PdfPCell celda = new PdfPCell(textoCelda);
-					celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(celda);
-				}
-				for(List<String> linea : texto) {
-					
-					for (String dato : linea) {
-						Phrase datoCelda = new Phrase(dato, normal);
-						PdfPCell celda = new PdfPCell(datoCelda);
-						celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-						table.addCell(celda);
-					}
-				}
-				document.add(table);
-			}
-			
-			
-			
-	        
-	        document.close(); // Cerramos el documento
-	        System.out.println("Se exportado el informe con éxito.");
-		} catch (Exception e) {
-			System.out.println("Ha surgido un error durante la exportación del informe.");
+		if(texto == null) {
+			System.out.println("No se ha podido generar el informe de pedidos por artículo");
+			return;
 		}
 		
+		String titulo = "Pedidos por artículo";
+		
+		List<String> cabecera = new ArrayList<String>();
+		cabecera.add("Código de artículo");
+		cabecera.add("Cantidad de pedidos");
+		
+		String cabeceraPrint = String.format("%-18s %-18s\n", "Cód. de artículos", "Cantidad de pedidos"); 
+		System.out.print(cabeceraPrint);
+		
+		
+		for (List<String> linea : texto) {
+			System.out.printf("%-18s %-18s\n", linea.get(0), linea.get(1));
+		}
+		
+		
+		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
+	}
+	
+	public static void informeMediaArticulosPorPedido() {
+
+		String titulo = "Media de artículos por pedido";
+		
+		String media = Main.mND.mediaArticulosPorPedido();
+		
+		String introduccion = String.format("La media de artículos solicitados por pedido recibido es: %s\n", media);
+		
+		System.out.print(introduccion);
+		
+		GeneradorPdf.guardarPdf(titulo, introduccion, null, null);
 	}
 	
 }
