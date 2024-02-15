@@ -147,6 +147,8 @@ public class Manejo_SQL {
 			s.executeUpdate("INSERT OR REPLACE INTO pedidos VALUES('"+pedido.getNumeroPedido()+"','"+pedido.getCliente().getNumeroCliente()+"','"+pedido.getFecha()+"');");
 			
 			cerrarConexion();
+			
+			
 		} catch (SQLException e) {
 			System.err.println("No se ha podido sobreescribir el pedido");
 			//e.printStackTrace();
@@ -163,6 +165,7 @@ public class Manejo_SQL {
 		}
 		cerrarConexion();
 		System.out.println("Se ha reemplazado el pedido "+pedido.getNumeroPedido()+" con éxito.");
+
 	}
 	
 	public boolean comprobarCliente(String num_Cliente) {
@@ -274,6 +277,7 @@ public class Manejo_SQL {
 		}
 		System.out.println("Se ha guardado el pedido "+pedido.getNumeroPedido()+" con éxito.");
 		cerrarConexion();
+
 		return 0;
 	}
 
@@ -370,7 +374,7 @@ public class Manejo_SQL {
 			cerrarConexion();
 		}
 		
-		
+
 	}
 	
 	

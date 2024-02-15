@@ -63,6 +63,12 @@ public class Manejo_NeoDatis {
 			objetos.forEach((O) -> {
 				articulos.add((LineaPedido) O);
 			});
+
+			//El motivo de no utilizar una consulta de neoDatis es que el campo de cantidad se guarda como un String en lugar de int, lo que da problemas
+			// a la hora de utilizar el método sum()
+			
+			//Esta sería la consulta que se usaría en su lugar
+			//Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("num_Articulo").sum("cantidad").groupBy("num_Articulo"));
 			
 			cerrarConexion();
 			return articulos;

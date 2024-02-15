@@ -33,6 +33,9 @@ import com.lowagie.text.pdf.PdfPCell;
 public class GeneradorInformes {
 	
 	public static void informeArticulosPorCantidad() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		System.out.println("Este informe muestra un listado de los artículos solicitados y la cantidad solicitada de cada uno de ellos");
 		
 		List<LineaPedido> articulos = Main.mND.exportarArticulosYCantidad();
@@ -42,7 +45,8 @@ public class GeneradorInformes {
 		}
 		
 		//Como nos interesa sumar la cantidad pedida de cada artículo, podemos pasarlo a un mapa
-		
+		//El motivo de hacer esto en lugar de una consulta mas compleja de NeoDatis
+		//es que el campo cantidad en LineaPedido se guarda como string, lo que da problema con sum()
 		Map<String, Integer> procesado = new HashMap<String, Integer>();
 		
 		for(LineaPedido lp : articulos) {
@@ -82,6 +86,9 @@ public class GeneradorInformes {
 	}
 	
 	public static void informePedidoUnidadesPedidas() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<Pedido> pedidos = Main.mND.exportarPedidos();
 		
 		String titulo = "Número de unidades pedidas por pedido";
@@ -118,6 +125,9 @@ public class GeneradorInformes {
 	
 
 	public static void informeUnidadesPedidasPorArticulo() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		
 		if(lineasPedido == null) {
@@ -166,6 +176,9 @@ public class GeneradorInformes {
 	}
 	
 	public static void informePedidosPorCliente() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<Cliente> clientes = Main.mND.exportarClientes();
 		if(clientes == null) {
 			System.out.println("No se ha podido generar el informe del número de pedidos por cliente");
@@ -199,6 +212,9 @@ public class GeneradorInformes {
 	}
 	
 	public static void informePedidosRecibidos() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<Pedido> pedidos = Main.mND.exportarPedidos();
 		
 		if(pedidos == null) {
@@ -275,6 +291,9 @@ public class GeneradorInformes {
 	}
 	
 	public static void informeLineasDePedido() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		
 		if(lineasPedido == null) {
@@ -334,6 +353,9 @@ public class GeneradorInformes {
 	}
 	
 	public static void informePedidoClienteFecha() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+		
 		List<Pedido> pedidos = Main.mND.exportarPedidos();
 		
 		if(pedidos == null) {
@@ -370,6 +392,8 @@ public class GeneradorInformes {
 	}
 	
 	public static void informePedidosPorArticulo() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
 		
 		List<List<String>> texto = Main.mND.exportarPedidosPorArticulo();
 		
@@ -397,6 +421,8 @@ public class GeneradorInformes {
 	}
 	
 	public static void informeMediaArticulosPorPedido() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
 
 		String titulo = "Media de artículos por pedido";
 		
