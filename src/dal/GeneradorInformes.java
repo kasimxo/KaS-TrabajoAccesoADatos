@@ -360,14 +360,27 @@ public class GeneradorInformes {
 			linea.add(p.getCliente().getNumeroCliente());
 			linea.add(p.getFecha());
 			
-			//String linea = String.format("%-18s %-18s %-18s\n", p.getNumeroPedido(), p.getCliente().getNumeroCliente(), p.getFecha());
-			//System.out.print(linea);
+			String lineaPrint = String.format("%-18s %-18s %-18s\n", p.getNumeroPedido(), p.getCliente().getNumeroCliente(), p.getFecha());
+			System.out.print(lineaPrint);
 			texto.add(linea);
 		}
 
 		guardarPdf(titulo, null, cabecera, texto);
 		
 	}
+	
+		public static void informeMediaArticulosPorPedido() {
+
+			String titulo = "Media de artículos por pedido";
+			
+			String media = Main.mND.mediaArticulosPorPedido();
+			
+			String introduccion = String.format("La media de artículos solicitados por pedido recibido es: %s\n", media);
+			
+			System.out.print(introduccion);
+			
+			guardarPdf(titulo, introduccion, null, null);
+		}
 	
 	
 	
@@ -419,27 +432,29 @@ public class GeneradorInformes {
 				document.add(parrafoIntroduccion);
 			}
 			
-			
-			//Creamos la tabla que contendrá todo el informe
-			PdfPTable table = new PdfPTable(cabecera.size());
-			for(String th : cabecera) {
-				Phrase textoCelda = new Phrase(th, normal);
-				PdfPCell celda = new PdfPCell(textoCelda);
-				celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(celda);
-			}
-			for(List<String> linea : texto) {
-				
-				for (String dato : linea) {
-					Phrase datoCelda = new Phrase(dato, normal);
-					PdfPCell celda = new PdfPCell(datoCelda);
+			if(cabecera != null && texto != null) {
+				//Creamos la tabla que contendrá todo el informe
+				PdfPTable table = new PdfPTable(cabecera.size());
+				for(String th : cabecera) {
+					Phrase textoCelda = new Phrase(th, normal);
+					PdfPCell celda = new PdfPCell(textoCelda);
 					celda.setHorizontalAlignment(Element.ALIGN_CENTER);
 					table.addCell(celda);
 				}
+				for(List<String> linea : texto) {
+					
+					for (String dato : linea) {
+						Phrase datoCelda = new Phrase(dato, normal);
+						PdfPCell celda = new PdfPCell(datoCelda);
+						celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+						table.addCell(celda);
+					}
+				}
+				document.add(table);
 			}
 			
 			
-			document.add(table);
+			
 	        
 	        document.close(); // Cerramos el documento
 	        System.out.println("Se exportado el informe con éxito.");

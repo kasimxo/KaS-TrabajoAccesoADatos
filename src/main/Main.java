@@ -121,6 +121,7 @@ public class Main {
 			break;
 		case 7:
 			//7. Informe de media de artículos por pedido recibidos
+			GeneradorInformes.informeMediaArticulosPorPedido();
 			break;
 		case 8:
 			//Opcional I: 8. Informe resumen de pedidos por cliente y fecha

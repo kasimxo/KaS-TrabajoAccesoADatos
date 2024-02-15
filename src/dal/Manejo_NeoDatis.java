@@ -1,12 +1,14 @@
 package dal;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
+import org.neodatis.odb.ObjectValues;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.Values;
 import org.neodatis.odb.core.query.criteria.Where;
@@ -123,7 +125,36 @@ public class Manejo_NeoDatis {
 		
 	}
 	
+	/**
+	 * Calcula la media de la cantidad de articulos solicitada por pedido
+	 * ie: si solo se solicita un tipo de artículo, pero 100 unidades de ese articulo, devuelve 100
+	 * @return
+	 */
+	public String mediaArticulosPorPedido() {
+		try {
+			establecerConexion();
+			
+			
+			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("cantidad")); //Cantidad de articulos por pedido
+			
+			int totalArticulos = 0;
+			
+			while (valores.hasNext()) {
+				ObjectValues ov = valores.next();
+				totalArticulos += Integer.parseInt((String) ov.getByAlias("cantidad"));
+			}
 
+			BigInteger totalPedidos = odb.count(new CriteriaQuery(Pedido.class));
+			int rawMedia = totalArticulos / totalPedidos.intValue() ;
+			
+			cerrarConexion();
+			return Integer.toString(rawMedia);
+		} catch (Exception e) {
+			System.out.println("No se ha podido calcular la media de artículos por pedido recibido");
+			cerrarConexion();
+			return null;
+		}
+	}
 	
 	public String numeroPedidosRecibidos() {
 		try {
