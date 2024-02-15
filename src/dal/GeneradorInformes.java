@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.io.*;
 
 import dataClasses.Articulo;
+import dataClasses.Cliente;
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
 import main.Main;
@@ -164,6 +165,39 @@ public class GeneradorInformes {
 		
 	}
 	
+	public static void informePedidosPorCliente() {
+		List<Cliente> clientes = Main.mND.exportarClientes();
+		if(clientes == null) {
+			System.out.println("No se ha podido generar el informe del número de pedidos por cliente");
+			return;
+		}
+		
+		String titulo = "Número de pedidos por cliente";
+		
+		List<String> cabecera = new ArrayList<String>();
+		cabecera.add("Cliente");
+		cabecera.add("Número de pedidos");
+		
+		String cabeceraPrint = String.format("%-18s %-18s\n", "Cliente", "Número de pedidos");
+		System.out.print(cabeceraPrint);
+		
+		List<List<String>> texto = new ArrayList<List<String>>();
+		
+		for (Cliente c : clientes) {
+			int numeroPedidos = Main.mND.numeroPedidosPorCliente(c);
+			
+			List<String> linea = new ArrayList<String>();
+			linea.add(c.getNumeroCliente());
+			linea.add(Integer.toString(numeroPedidos));
+			texto.add(linea);
+			
+			String lineaPrint = String.format("%-18s %-18d\n", c.getNumeroCliente(), numeroPedidos);
+			System.out.print(lineaPrint);
+		}
+		
+		guardarPdf(titulo, null, cabecera, texto);
+	}
+	
 	public static void informeLineasDePedido() {
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		
@@ -182,7 +216,7 @@ public class GeneradorInformes {
 		cabecera.add("Precio/ud.");
 		cabecera.add("Precio total");
 		
-		String numero = Main.mND.numeroLineasPedido();
+		String numero = Main.mND.numeroLineasPedido(); // Utiliza un método de NeoDatis
 		
 		if(numero == null) {
 			numero = Integer.toString(lineasPedido.size());

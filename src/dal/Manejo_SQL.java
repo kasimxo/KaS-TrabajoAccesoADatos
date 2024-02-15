@@ -466,6 +466,12 @@ public class Manejo_SQL {
 				
 				numeroCliente = rsPedidos.getString(2);
 				
+				Cliente c = new Cliente();
+				
+				c.setNumeroCliente(numeroCliente);
+				
+				p.setCliente(c);
+				
 				p.setFecha(rsPedidos.getString(3));
 				
 				pedidos.add(p);
@@ -476,7 +482,7 @@ public class Manejo_SQL {
 			
 			for (Pedido p : pedidos) {
 				
-				ResultSet rsCliente = s.executeQuery("SELECT * FROM clientes WHERE num_Cliente='"+numeroCliente+"';");
+				ResultSet rsCliente = s.executeQuery("SELECT * FROM clientes WHERE num_Cliente='"+p.getCliente().getNumeroCliente()+"';");
 				
 				
 				//Sacamos el cliente de ese pedido

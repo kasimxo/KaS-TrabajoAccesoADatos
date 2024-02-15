@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
+import org.neodatis.odb.Values;
+import org.neodatis.odb.core.query.criteria.Where;
+import org.neodatis.odb.core.query.IQuery;
+import org.neodatis.odb.core.query.criteria.*;
 import org.neodatis.odb.impl.core.query.criteria.CriteriaQuery;
+import org.neodatis.odb.impl.core.query.values.ValuesCriteriaQuery;
 
 import dataClasses.LineaPedido;
 import dataClasses.Pedido;
@@ -117,6 +122,45 @@ public class Manejo_NeoDatis {
 		}
 		
 	}
+	
+	public int numeroPedidosPorCliente(Cliente c) {
+		try {
+			establecerConexion();
+			
+			ICriterion criterio = Where.equal("cliente.numeroCliente", c.getNumeroCliente());
+			
+			IQuery query = new CriteriaQuery(Pedido.class, criterio); 
+
+			//Recuperamos todos los pedidos que coincidan con el cliente
+			Objects<Pedido> raw = odb.getObjects(query);
+			
+			cerrarConexion();
+			return raw.size(); //Devolvemos el número de esos pedidos
+		} catch (Exception e) {
+			System.out.println("No se ha podido contar el número de pedidos del cliente " + c);
+			return 0;
+		}
+		
+	}
+	
+	public List<Cliente> exportarClientes(){
+		try {
+			establecerConexion();
+			
+			Objects<Cliente> clientesExportado = odb.getObjects(Cliente.class);
+			
+			List<Cliente> clientes = new ArrayList<Cliente>();
+			
+			clientesExportado.forEach((C) -> {clientes.add(C);});
+			
+			cerrarConexion();
+			return clientes;
+		} catch (Exception e) {
+			System.out.println("No se han podido exportar los clientes");
+			return null;
+		}
+	}
+	
 	
 	public List<LineaPedido> exportarLineasDePedido(){
 		try {

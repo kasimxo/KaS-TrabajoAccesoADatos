@@ -108,6 +108,7 @@ public class Main {
 			break;
 		case 4:
 			//4. Informe de número de pedidos por cliente
+			GeneradorInformes.informePedidosPorCliente();
 			break;
 		case 5:
 			//5. Informe de las unidades de cada artículo por servir
