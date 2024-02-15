@@ -32,14 +32,8 @@ import utils.Input;
 public class ProcesadorDeArchivos {
 	
 	public void procesarNuevoPedido() {
-		
-		//WINDOWS
-		//File f = new File(".\\files\\archivosEntrada\\");
-		
-		//LINUX
-		File f = new File("./files/archivosEntrada/");
-		
-		File[] archivos = f.listFiles();
+
+		File[] archivos = Main.entradaArchivos.listFiles();
 		
 		//Comprobamos cuantos archivos hay por si no hay ninguno
 		if(archivos.length<1) {
@@ -93,11 +87,8 @@ public class ProcesadorDeArchivos {
 		try {
 			//SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.);
 			SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-			//WINDOWS
-			//Source schemaFile = new StreamSource(new File("".\\files\\schema\\pedidos.xsd""));
-			
-			//LINUX
-			Source schemaFile = new StreamSource(new File("./files/schema/pedidos.xsd"));
+
+			Source schemaFile = new StreamSource(Main.schema);
 			
 			Schema schema = factory.newSchema(schemaFile);
 			
@@ -131,7 +122,6 @@ public class ProcesadorDeArchivos {
 			} else {
 				System.out.println("No se ha podido procesar el archivo.");
 			}
-			
 		}
 		return listadoPedidos;
 	}
@@ -202,12 +192,12 @@ public class ProcesadorDeArchivos {
 			}
 			
 			//WINDOWS
-			//File f = new File(".\\files\\archivosEntrada\\");
+			//File f = new File(".\\files\\archivosProcesados\\");
 			
 			//LINUX
-			File copia = new File("./files/archivosProcesados/");
+			//File copia = new File("./files/archivosProcesados/");
 			
-			String destino = copia.getAbsolutePath()+"/"+archivo.getName();
+			String destino = Main.archivosProcesados.getAbsolutePath()+"\\"+archivo.getName();
 			
 			
 			//Movemos el archivo a la carpeta de procesados

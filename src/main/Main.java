@@ -1,5 +1,6 @@
 package main;
-import java.util.Scanner;
+
+import java.io.File;
 
 import dal.GeneradorInformes;
 import dal.Manejo_NeoDatis;
@@ -17,11 +18,25 @@ public class Main {
 	// Clase que maneja la conexión y peticiones con la bbdd NeoDatis
 	public static Manejo_NeoDatis mND;
 	
+	public static Input i;
+	
+	//Las rutas que se usarán durante la ejecucción del programa para la entrada y salida de archivos
+	public static File entradaArchivos;
+	public static File archivosProcesados;
+	public static File schema;
+	public static File informes;
+	
 	
 	public static void main(String[] args) {
 		
+		//Iniciamos las rutas de los archivos
+		entradaArchivos = new File(".\\files\\archivosEntrada\\");
+		archivosProcesados = new File(".\\files\\archivosProcesados\\");
+		schema = new File(".\\files\\schema\\pedidos.xsd");
+		informes = new File(".\\files\\informes\\");
+		
 		//Con esto iniciamos la clase que manejará el input
-		new Input();
+		i = new Input();
 		
 		mSQL = new Manejo_SQL();
 		mND = new Manejo_NeoDatis();
@@ -59,6 +74,7 @@ public class Main {
 			break;
 		case 4:
 			//Configuración
+			configuracion();
 			break;
 		case 5:
 			//Borrar base de datos
@@ -76,6 +92,50 @@ public class Main {
 		
 		}
 
+	}
+	
+	public static void configuracion() {
+		System.out.println("¿Qué ruta deseas modificar?");
+		String[] opciones = {
+				"1. Entrada de archivos", 
+				"2. Archivos procesados", 
+				"3. Esquema de validación de pedidos", 
+				"4. Salida de informes", 
+				"5. Restaurar configuración predeterminada"
+				};
+		for (String o : opciones) {System.out.println(o);};
+		switch(Input.leerInt()) {
+		case 1:
+			System.out.println("Introduce la nueva ruta:");
+			entradaArchivos = new File(Input.leerString());
+			System.out.println("Ruta modificada");
+			break;
+		case 2:
+			System.out.println("Introduce la nueva ruta:");
+			archivosProcesados = new File(Input.leerString());
+			System.out.println("Ruta modificada");
+			break;
+		case 3:
+			System.out.println("Introduce la nueva ruta:");
+			schema = new File(Input.leerString());
+			System.out.println("Ruta modificada");
+			break;
+		case 4:
+			System.out.println("Introduce la nueva ruta:");
+			informes = new File(Input.leerString());
+			System.out.println("Ruta modificada");
+			break;
+		case 5:
+			entradaArchivos = new File(".\\files\\archivosEntrada\\");
+			archivosProcesados = new File(".\\files\\archivosProcesados\\");
+			schema = new File(".\\files\\schema\\pedidos.xsd");
+			informes = new File(".\\files\\informes\\");
+			System.out.println("Rutas restauradas");
+			break;
+		default:
+				System.out.println("Opción no reconocida");
+				break;
+		}
 	}
 
 	public static void menuInformes() {

@@ -1,0 +1,5 @@
+//WINDOWS
+//File f = new File(".\\files\\archivosEntrada\\");
+		
+//LINUX
+File f = new File("./files/archivosEntrada/");

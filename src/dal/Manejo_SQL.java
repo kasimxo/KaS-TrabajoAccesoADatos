@@ -28,10 +28,10 @@ public class Manejo_SQL {
 		try {
 			
 			//WINDOWS:
-			// dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
 			
 			//LINUX:
-			dbPath = new File("./files/db/pedidosAdiDam.db");
+			//dbPath = new File("./files/db/pedidosAdiDam.db");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos SQL");
@@ -200,7 +200,7 @@ public class Manejo_SQL {
 				
 			} else {
 				System.err.println("El cliente "+pedido.getCliente().getNumeroCliente()+" no está registrado.");
-				System.err.println("1. Cancelar pedido\n2. Registrar nuevo cliente.");
+				System.out.println("1. Cancelar pedido\n2. Registrar nuevo cliente.");
 				switch(Input.leerInt()) {
 				case 1:
 					System.out.println("Se ha cancelado el procesamiento de este pedido.");
@@ -220,17 +220,17 @@ public class Manejo_SQL {
 			for(Articulo articulo: pedido.getArticulos()) {
 				if(!comprobarArticulo(articulo.getCodigo())) {
 					System.err.println("El articulo " + articulo.getCodigo()+" no existe en el almacen.");
-					System.err.println("1. Cancelar pedido\n2. Registrar nuevo artículo.");
+					System.out.println("1. Cancelar pedido\n2. Registrar nuevo artículo.");
 					switch(Input.leerInt()) {
 					case 1:
-						System.out.println("Se ha cancelado el procesamiento de este pedido.");
+						System.out.println("Se ha cancelado el procesamiento del pedido "+pedido.getNumeroPedido());
 						cerrarConexion();
 						return -2;
 					case 2:
 						crearArticulo(articulo.getCodigo());
 						break;
 					default:
-						System.out.println("Opción no reconocida. Se ha cancelado el procesamiento.");
+						System.out.println("Opción no reconocida. Se ha cancelado el procesamiento del pedido "+pedido.getNumeroPedido());
 						cerrarConexion();
 						return -2;
 					}
@@ -241,17 +241,18 @@ public class Manejo_SQL {
 			s.executeUpdate("INSERT INTO pedidos VALUES('"+pedido.getNumeroPedido()+"','"+pedido.getCliente().getNumeroCliente()+"','"+pedido.getFecha()+"');");
 			cerrarConexion();
 		} catch (SQLException e) {
-			System.err.println("Se ha producido un error tratanto de guardar el pedido en la base de datos, el pedido número " + pedido.getNumeroPedido()+" ya existe.");
+			System.out.println("Se ha producido un error tratanto de guardar el pedido en la base de datos, el pedido número " + pedido.getNumeroPedido()+" ya existe.");
 			System.out.println("1. Descartar el nuevo pedido\n2. Sobreescribir el antiguo pedido");
 			//e.printStackTrace();
 			switch (Input.leerInt()) {
 				case 1:
 					//borrarPedido(pedido);
+					System.out.println("Se ha descartado el pedido "+pedido.getNumeroPedido());
 					cerrarConexion();
 					return 0;
 				case 2:
-					//borrarPedido(pedido);
-					//insertNuevoPedido(pedido);
+					borrarPedido(pedido);
+					insertNuevoPedido(pedido);
 					cerrarConexion();
 					return -1;
 				default:

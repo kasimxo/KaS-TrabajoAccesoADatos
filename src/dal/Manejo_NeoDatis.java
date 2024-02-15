@@ -32,10 +32,10 @@ public class Manejo_NeoDatis {
 		
 		try {
 			//WINDOWS
-			//dbPath =  new File(".\\files\\db\\informes");
+			dbPath =  new File(".\\files\\db\\informes");
 			
 			//LINUX
-			dbPath =  new File("./files/db/informes");
+			//dbPath =  new File("./files/db/informes");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos NeoDatis");
