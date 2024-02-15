@@ -198,6 +198,82 @@ public class GeneradorInformes {
 		guardarPdf(titulo, null, cabecera, texto);
 	}
 	
+	public static void informePedidosRecibidos() {
+		List<Pedido> pedidos = Main.mND.exportarPedidos();
+		
+		if(pedidos == null) {
+			System.out.println("No se ha podido generar el informe del número de líneas de pedido recibidas");
+			return;
+		}
+		
+		String numero = Main.mND.numeroPedidosRecibidos();
+		//Si hubiera dado algún error ese método, prueba un método alternativo
+		if(numero == null) {
+			numero = Integer.toString(pedidos.size());
+		}
+		
+		String titulo = "Número de pedidos recibidos";
+		
+		String introduccion = String.format("El número de pedidos recibidos es: %s\n", numero);
+		System.out.print(introduccion);
+		
+		List<String> cabecera = new ArrayList<String>();
+		cabecera.add("N.º de pedido");
+		cabecera.add("Cód. de cliente");
+		cabecera.add("Nombre");
+		cabecera.add("Apellidos");
+		cabecera.add("Empresa");
+		cabecera.add("Teléfono");
+		cabecera.add("Fecha");
+		cabecera.add("Precio");
+		
+		String cabeceraPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s %-18s\n", 
+				"N.º de pedido",
+				"Cód. de cliente",
+				"Nombre","Apellidos",
+				"Empresa",
+				"Teléfono",
+				"Fecha",
+				"Valor");
+		System.out.print(cabeceraPrint);
+		
+		List<List<String>> texto = new ArrayList<List<String>>();
+		for (Pedido p : pedidos) {
+			List<String> linea = new ArrayList<String>();
+			linea.add(p.getNumeroPedido());
+			linea.add(p.getCliente().getNumeroCliente());
+			linea.add(p.getCliente().getNombre());
+			linea.add(p.getCliente().getApellidos());
+			linea.add(p.getCliente().getEmpresa());
+			linea.add(p.getCliente().getTelefono());
+			linea.add(p.getFecha());
+			
+			int valor = 0;
+			
+			for (Articulo a : p.getArticulos()) {
+				valor += Integer.parseInt(a.getCantidad()) * Integer.parseInt(a.getPrecio());
+			}
+			
+			linea.add(Integer.toString(valor));
+			
+			texto.add(linea);
+			
+			String lineaPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s %-18s\n", 
+					p.getNumeroPedido(),
+					p.getCliente().getNumeroCliente(),
+					p.getCliente().getNombre(),
+					p.getCliente().getApellidos(),
+					p.getCliente().getEmpresa(),
+					p.getCliente().getTelefono(),
+					p.getFecha(),
+					Integer.toString(valor));
+			System.out.print(lineaPrint);
+			
+		}
+			
+		guardarPdf(titulo, introduccion, cabecera, texto);
+	}
+	
 	public static void informeLineasDePedido() {
 		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
 		

@@ -123,6 +123,24 @@ public class Manejo_NeoDatis {
 		
 	}
 	
+
+	
+	public String numeroPedidosRecibidos() {
+		try {
+			establecerConexion();
+			
+			BigInteger a = odb.count(new CriteriaQuery(Pedido.class));
+			
+			cerrarConexion();
+			return a.toString();
+		} catch (Exception e) {
+			System.out.println("No se han podido contar los pedidos procesados");
+			cerrarConexion();
+			return null;
+		}
+		
+	}
+	
 	public int numeroPedidosPorCliente(Cliente c) {
 		try {
 			establecerConexion();

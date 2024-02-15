@@ -98,6 +98,7 @@ public class Main {
 		switch (Input.leerInt()) {
 		case 1:
 			//1. Informe del número de pedidos recibidos y procesados correctamente
+			GeneradorInformes.informePedidosRecibidos();
 			break;
 		case 2:
 			//2. Informe del número de líneas de pedido recibidas
