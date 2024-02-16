@@ -28,10 +28,10 @@ public class Manejo_SQL {
 		try {
 			
 			//WINDOWS:
-			dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
+			//dbPath = new File(".\\files\\db\\pedidosAdiDam.db");
 			
 			//LINUX:
-			//dbPath = new File("./files/db/pedidosAdiDam.db");
+			dbPath = new File("./files/db/pedidosAdiDam.db");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos SQL");

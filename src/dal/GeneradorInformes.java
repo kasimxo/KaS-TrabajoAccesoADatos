@@ -38,25 +38,10 @@ public class GeneradorInformes {
 		
 		System.out.println("Este informe muestra un listado de los artículos solicitados y la cantidad solicitada de cada uno de ellos");
 		
-		List<LineaPedido> articulos = Main.mND.exportarArticulosYCantidad();
+		List<List<String>> texto = Main.mND.exportarArticulosYCantidad();
 		
-		if(articulos == null) {
+		if(texto == null) {
 			return;
-		}
-		
-		//Como nos interesa sumar la cantidad pedida de cada artículo, podemos pasarlo a un mapa
-		//El motivo de hacer esto en lugar de una consulta mas compleja de NeoDatis
-		//es que el campo cantidad en LineaPedido se guarda como string, lo que da problema con sum()
-		Map<String, Integer> procesado = new HashMap<String, Integer>();
-		
-		for(LineaPedido lp : articulos) {
-			if (procesado.containsKey(lp.getNum_Articulo())) {
-				Integer cantidadActual = procesado.get(lp.getNum_Articulo());
-				cantidadActual += lp.getCantidad();
-				procesado.put(lp.getNum_Articulo(), cantidadActual);
-			} else {
-				procesado.put(lp.getNum_Articulo(), lp.getCantidad());
-			}
 		}
 		
 		String titulo = "Artículo Cantidad";
@@ -68,18 +53,9 @@ public class GeneradorInformes {
 		String cabeceraPrint = String.format("%-15s %-15s\n", "Artículo", "Cantidad");
 		System.out.printf(cabeceraPrint);
 		
-		List<List<String>> texto = new ArrayList<List<String>>();
-		
-		procesado.forEach((K,V) -> {
-			List<String> linea = new ArrayList<String>();
-			linea.add(K);
-			linea.add(Integer.toString(V));
-			
-			String lineaPrint = String.format("%-15s %-15s\n", K, V.toString());
-			System.out.print(lineaPrint);
-			
-			texto.add(linea);
-		});
+		for (List<String> linea : texto) {
+			System.out.printf("%-15s %-15s\n", linea.get(0), linea.get(1));
+		}
 		
 		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		

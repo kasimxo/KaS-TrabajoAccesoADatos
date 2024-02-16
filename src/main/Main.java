@@ -30,10 +30,15 @@ public class Main {
 	public static void main(String[] args) {
 		
 		//Iniciamos las rutas de los archivos
-		entradaArchivos = new File(".\\files\\archivosEntrada\\");
-		archivosProcesados = new File(".\\files\\archivosProcesados\\");
-		schema = new File(".\\files\\schema\\pedidos.xsd");
-		informes = new File(".\\files\\informes\\");
+//		entradaArchivos = new File(".\\files\\archivosEntrada\\");
+//		archivosProcesados = new File(".\\files\\archivosProcesados\\");
+//		schema = new File(".\\files\\schema\\pedidos.xsd");
+//		informes = new File(".\\files\\informes\\");
+		
+		entradaArchivos = new File("./files/archivosEntrada/");
+		archivosProcesados = new File("./files/archivosProcesados/");
+		schema = new File("./files/schema/pedidos.xsd");
+		informes = new File("./files/informes/");
 		
 		//Con esto iniciamos la clase que manejará el input
 		i = new Input();

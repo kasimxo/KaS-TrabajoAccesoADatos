@@ -32,10 +32,10 @@ public class Manejo_NeoDatis {
 		
 		try {
 			//WINDOWS
-			dbPath =  new File(".\\files\\db\\informes");
+			//dbPath =  new File(".\\files\\db\\informes");
 			
 			//LINUX
-			//dbPath =  new File("./files/db/informes");
+			dbPath =  new File("./files/db/informes");
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos NeoDatis");
@@ -53,27 +53,30 @@ public class Manejo_NeoDatis {
 	/**
 	 * Exporta todos los articulos solicitados y su cantidad solicitada
 	 */
-	public List<LineaPedido> exportarArticulosYCantidad() {
-		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
+	public List<List<String>>exportarArticulosYCantidad() {
 		try {
 			establecerConexion();
 			
-			Objects<LineaPedido> objetos = odb.getObjects(LineaPedido.class);
-			
-			objetos.forEach((O) -> {
-				articulos.add((LineaPedido) O);
-			});
+			List<List<String>> texto = new ArrayList<List<String>>();
 
-			//El motivo de no utilizar una consulta de neoDatis es que el campo de cantidad se guarda como un String en lugar de int, lo que da problemas
-			// a la hora de utilizar el método sum()
+			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("num_Articulo").sum("cantidad").groupBy("num_Articulo"));
 			
-			//Esta sería la consulta que se usaría en su lugar
-			//Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("num_Articulo").sum("cantidad").groupBy("num_Articulo"));
+			while (valores.hasNext()) {
+				List<String> linea = new ArrayList<String>();
+				
+				ObjectValues ov = valores.next();
+				BigDecimal cantidad = (BigDecimal) ov.getByIndex(1);
+
+				linea.add((String)ov.getByIndex(0));
+				linea.add(cantidad.toString());
+				texto.add(linea);
+			}
 			
 			cerrarConexion();
-			return articulos;
+			return texto;
 		} catch (Exception e) {
 			System.out.println("Se ha producido un error exportando los articulos por cantidad de NeoDatis.");
+			cerrarConexion();
 			return null;
 		}
 	}
@@ -321,6 +324,7 @@ public class Manejo_NeoDatis {
 			this.odb = ODBFactory.open(dbPath.getAbsolutePath());
 		} catch (Exception e) {
 			System.out.println("No se ha podido establecer conexión con la base de datos NeoDatis.");
+			System.out.println(dbPath.getAbsolutePath());
 		}
 	}
 	
