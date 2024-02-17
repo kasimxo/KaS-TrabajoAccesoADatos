@@ -79,13 +79,10 @@ public class GeneradorInformes {
 		
 		String cabeceraPrint = String.format("%-18s %-18s\n", "Pedido", "Unidades pedidas");
 		System.out.print(cabeceraPrint);
-		
-
 
 		for (List<String> linea : texto) {
 			System.out.printf("%-18s %-18s\n", linea.get(0), linea.get(1));
 		}
-		
 		
 		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
@@ -96,9 +93,9 @@ public class GeneradorInformes {
 		Main.mND.borrarBaseDeDatos();
 		Main.mND.sincronizacion();
 		
-		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
+		List<List<String>> texto = Main.mND.exportarUnidadesPedidasPorArticulo();
 		
-		if(lineasPedido == null) {
+		if(texto == null) {
 			System.out.println("No se ha podido generar el informe de la unidades pedidas de cada artículo");
 			return;
 		}
@@ -112,32 +109,9 @@ public class GeneradorInformes {
 		String cabeceraPrint = String.format("%-18s %-18s\n", "Código de artículo", "Unidades pedidas");
 		System.out.print(cabeceraPrint);
 		
-		//Generamos un mapa de los artículos, de este modo resulta mas sencillo contar el total de unidades
-		// K, V -> K=Código de artículo, V=Unidades pedidas
-		Map<String, Integer> mapa = new HashMap<String, Integer>();
-		
-		for(LineaPedido lp : lineasPedido) {
-			if(mapa.containsKey(lp.getNum_Articulo())) {
-				int cantidad = mapa.get(lp.getNum_Articulo());
-				cantidad += lp.getCantidad();
-				mapa.put(lp.getNum_Articulo(), cantidad);
-			} else {
-				mapa.put(lp.getNum_Articulo(), lp.getCantidad());
-			}
+		for (List<String> linea : texto) {
+			System.out.printf("%-18s %-18s\n", linea.get(0), linea.get(1));
 		}
-		
-		List<List<String>> texto = new ArrayList<List<String>>();
-
-		mapa.forEach( (K, V) -> {
-			List<String> linea = new ArrayList<String>();
-			linea.add(K);
-			linea.add(Integer.toString(V));
-			
-			String lineaPrint = String.format("%-18s %-18s\n", K, Integer.toString(V));
-			System.out.print(lineaPrint);
-			
-			texto.add(linea);
-		});
 		
 		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
