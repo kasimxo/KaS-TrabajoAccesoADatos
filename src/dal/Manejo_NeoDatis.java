@@ -321,6 +321,45 @@ public class Manejo_NeoDatis {
 		}
 	}
 	
+	public List<List<String>> exportarPedidosTexto() {
+		try {
+			establecerConexion();
+			
+			List<List<String>> texto = new ArrayList<List<String>>();
+			
+			Values valores = odb.getValues(new ValuesCriteriaQuery(Pedido.class)
+					.field("numeroPedido")
+					.field("cliente.numeroCliente")
+					.field("cliente.nombre")
+					.field("cliente.apellidos")
+					.field("cliente.empresa")
+					.field("cliente.telefono")
+					.field("fecha")); //Cantidad de articulos por pedido
+
+			while (valores.hasNext()) {
+				ObjectValues ov = valores.next();
+				
+				List<String> linea = new ArrayList<String>();
+				
+				linea.add((String) ov.getByIndex(0));
+				linea.add((String) ov.getByIndex(1));
+				linea.add((String) ov.getByIndex(2));
+				linea.add((String) ov.getByIndex(3));
+				linea.add((String) ov.getByIndex(4));
+				linea.add((String) ov.getByIndex(5));
+				linea.add((String) ov.getByIndex(6));
+
+				texto.add(linea);
+			}
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			cerrarConexion();
+			return null;
+		}
+	}
+	
 	public List<List<String>> exportarLineasDePedidoTexto(){
 		try {
 			establecerConexion();
@@ -397,11 +436,8 @@ public class Manejo_NeoDatis {
 				List<String> linea = new ArrayList<String>();
 				
 				linea.add((String) ov.getByIndex(0));
-
 				linea.add((String) ov.getByIndex(1));
-				
 				linea.add((String) ov.getByIndex(2));
-
 				texto.add(linea);
 			}
 			

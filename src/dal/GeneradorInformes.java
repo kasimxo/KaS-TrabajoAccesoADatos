@@ -151,6 +151,8 @@ public class GeneradorInformes {
 		
 		List<Pedido> pedidos = Main.mND.exportarPedidos();
 		
+		List<List<String>> texto = Main.mND.exportarPedidosTexto();
+		
 		if(pedidos == null) {
 			System.out.println("No se ha podido generar el informe del número de líneas de pedido recibidas");
 			return;
@@ -175,48 +177,27 @@ public class GeneradorInformes {
 		cabecera.add("Empresa");
 		cabecera.add("Teléfono");
 		cabecera.add("Fecha");
-		cabecera.add("Precio");
 		
-		String cabeceraPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s %-18s\n", 
+		String cabeceraPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s\n", 
 				"N.º de pedido",
 				"Cód. de cliente",
-				"Nombre","Apellidos",
+				"Nombre",
+				"Apellidos",
 				"Empresa",
 				"Teléfono",
-				"Fecha",
-				"Valor");
+				"Fecha");
 		System.out.print(cabeceraPrint);
 		
-		List<List<String>> texto = new ArrayList<List<String>>();
-		for (Pedido p : pedidos) {
-			List<String> linea = new ArrayList<String>();
-			linea.add(p.getNumeroPedido());
-			linea.add(p.getCliente().getNumeroCliente());
-			linea.add(p.getCliente().getNombre());
-			linea.add(p.getCliente().getApellidos());
-			linea.add(p.getCliente().getEmpresa());
-			linea.add(p.getCliente().getTelefono());
-			linea.add(p.getFecha());
+		for (List<String> linea : texto) {
 			
-			int valor = 0;
-			
-			for (Articulo a : p.getArticulos()) {
-				valor += Integer.parseInt(a.getCantidad()) * Integer.parseInt(a.getPrecio());
-			}
-			
-			linea.add(Integer.toString(valor));
-			
-			texto.add(linea);
-			
-			String lineaPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s %-18s\n", 
-					p.getNumeroPedido(),
-					p.getCliente().getNumeroCliente(),
-					p.getCliente().getNombre(),
-					p.getCliente().getApellidos(),
-					p.getCliente().getEmpresa(),
-					p.getCliente().getTelefono(),
-					p.getFecha(),
-					Integer.toString(valor));
+			String lineaPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s %-18s\n", 
+					linea.get(0),
+					linea.get(1),
+					linea.get(2),
+					linea.get(3),
+					linea.get(4),
+					linea.get(5),
+					linea.get(6));
 			System.out.print(lineaPrint);
 			
 		}
