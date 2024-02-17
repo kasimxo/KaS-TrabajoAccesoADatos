@@ -121,8 +121,9 @@ public class GeneradorInformes {
 		Main.mND.borrarBaseDeDatos();
 		Main.mND.sincronizacion();
 		
-		List<Cliente> clientes = Main.mND.exportarClientes();
-		if(clientes == null) {
+		List<List<String>> texto = Main.mND.numeroPedidosPorCliente();
+		
+		if(texto == null) {
 			System.out.println("No se ha podido generar el informe del número de pedidos por cliente");
 			return;
 		}
@@ -136,17 +137,8 @@ public class GeneradorInformes {
 		String cabeceraPrint = String.format("%-18s %-18s\n", "Cliente", "Número de pedidos");
 		System.out.print(cabeceraPrint);
 		
-		List<List<String>> texto = new ArrayList<List<String>>();
-		
-		for (Cliente c : clientes) {
-			int numeroPedidos = Main.mND.numeroPedidosPorCliente(c);
-			
-			List<String> linea = new ArrayList<String>();
-			linea.add(c.getNumeroCliente());
-			linea.add(Integer.toString(numeroPedidos));
-			texto.add(linea);
-			
-			String lineaPrint = String.format("%-18s %-18d\n", c.getNumeroCliente(), numeroPedidos);
+		for (List<String> linea : texto) {
+			String lineaPrint = String.format("%-18s %-18s\n", linea.get(0), linea.get(1));
 			System.out.print(lineaPrint);
 		}
 		

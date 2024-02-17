@@ -238,22 +238,36 @@ public class Manejo_NeoDatis {
 		
 	}
 	
-	public int numeroPedidosPorCliente(Cliente c) {
+	public List<List<String>> numeroPedidosPorCliente() {
 		try {
 			establecerConexion();
 			
-			ICriterion criterio = Where.equal("cliente.numeroCliente", c.getNumeroCliente());
+			List<List<String>> texto = new ArrayList<List<String>>();
 			
-			IQuery query = new CriteriaQuery(Pedido.class, criterio); 
+			Values valores = odb.getValues(new ValuesCriteriaQuery(Pedido.class).field("cliente.numeroCliente").count("num_Pedido").groupBy("cliente.numeroCliente")); //Cantidad de articulos por pedido
 
-			//Recuperamos todos los pedidos que coincidan con el cliente
-			Objects<Pedido> raw = odb.getObjects(query);
+			while (valores.hasNext()) {
+				ObjectValues ov = valores.next();
+				
+				Object o = ov; 
+				
+				List<String> linea = new ArrayList<String>();
+				
+				linea.add((String) ov.getByIndex(0));
+				
+				BigInteger cantidad = (BigInteger) ov.getByIndex(1);
+				
+				linea.add(cantidad.toString());
+
+				texto.add(linea);
+			}
 			
 			cerrarConexion();
-			return raw.size(); //Devolvemos el número de esos pedidos
+			return texto;
 		} catch (Exception e) {
-			System.out.println("No se ha podido contar el número de pedidos del cliente " + c);
-			return 0;
+			System.out.println("No se ha podido contar el número de pedidos del cliente");
+			cerrarConexion();
+			return null;
 		}
 		
 	}
