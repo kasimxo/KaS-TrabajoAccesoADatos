@@ -27,16 +27,17 @@ import dataClasses.Cliente;
 import dataClasses.Pedido;
 
 import main.Main;
+import utils.Configuracion;
 import utils.Input;
 
 public class ProcesadorDeArchivos {
 	
 	public void procesarNuevoPedido() {
 
-		File[] archivos = Main.entradaArchivos.listFiles();
+		File[] archivos = Configuracion.entradaArchivos.listFiles();
 		
 		//Comprobamos cuantos archivos hay por si no hay ninguno
-		if(archivos.length<1) {
+		if(archivos == null || archivos.length<1) {
 			System.out.println("No se ha encontrado ningún archivo para procesar");
 			return;
 		}
@@ -51,7 +52,7 @@ public class ProcesadorDeArchivos {
 		if(opcion.toUpperCase().charAt(0) == 'T') {
 			List<List<Pedido>> listadoPedidos = procesarTodos(archivos);
 			
-			System.out.println("Se han procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
+			System.out.println("Se han procesado el archivo correctamente\nSe van a insertar los datos en la base de datos");
 
 			for(List<Pedido> pedido : listadoPedidos) {
 				Main.mSQL.insertNuevosPedidos(pedido);
@@ -62,11 +63,11 @@ public class ProcesadorDeArchivos {
 				List<Pedido> pedido = procesar(archivos[numero-1]);
 				
 				if(pedido == null) {
-					System.out.println("No se ha podido procesar el archivo.");
+					System.out.println("No se ha podido procesar el archivo");
 					return;
 				}
 				
-				System.out.println("Se ha procesado el archivo correctamente.\nSe van a insertar los datos en la base de datos.");
+				System.out.println("Se ha procesado el archivo correctamente\nSe van a insertar los datos en la base de datos");
 				
 				Main.mSQL.insertNuevosPedidos(pedido);
 			} catch (Exception e) {
@@ -88,21 +89,21 @@ public class ProcesadorDeArchivos {
 			//SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.);
 			SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
-			Source schemaFile = new StreamSource(Main.schema);
+			Source schemaFile = new StreamSource(Configuracion.schema);
 			
 			Schema schema = factory.newSchema(schemaFile);
 			
 			Validator validator = schema.newValidator();
 		
 			validator.validate(new DOMSource(doc));
-			System.out.println("El archivo "+ filename +" cumple con el formato correcto.");
+			System.out.println("El archivo "+ filename +" cumple con el formato correcto");
 			return true;
 			
 		} catch (SAXException e) {
-			System.out.println("El archivo "+ filename +" no cumple con el formato correcto.");
+			System.out.println("El archivo "+ filename +" no cumple con el formato correcto");
 			return false;
 		} catch (Exception e) {
-			System.out.println("No se ha podido verificar que el archivo "+ filename +" cumpla con el formato correcto.");
+			System.out.println("No se ha podido verificar que el archivo "+ filename +" cumpla con el formato correcto");
 			return false;
 		}
 		
@@ -120,7 +121,7 @@ public class ProcesadorDeArchivos {
 			if(pedidos != null) {
 				listadoPedidos.add(pedidos);
 			} else {
-				System.out.println("No se ha podido procesar el archivo.");
+				System.out.println("No se ha podido procesar el archivo");
 			}
 		}
 		return listadoPedidos;
@@ -143,10 +144,8 @@ public class ProcesadorDeArchivos {
 			//Comprueba si el archivo cumple el formato correcto o no.
 			//Si no lo cumple, no procesa el archivo
 			if(!validarArchivo(archivo.getName(),doc)) {
-				System.out.println("Si se procesa este archivo, podrían producirse errores inesperados.\n¿Procesarlo igualmente?(S/N):");
-				if(!Input.aceptarCancelar()) {
-					return null;
-				}
+				System.out.println("Dado que el archivo "+archivo.getName()+" no cumple con el formato correcto, no puede ser procesado");
+				return null;
 			}
 			
 			Element root = (Element) doc.getDocumentElement();
@@ -190,27 +189,15 @@ public class ProcesadorDeArchivos {
 				
 				}
 			}
-			
-			//WINDOWS
-			//File f = new File(".\\files\\archivosProcesados\\");
-			
-			//LINUX
-			//File copia = new File("./files/archivosProcesados/");
-			
-			String destino = Main.archivosProcesados.getAbsolutePath()+"\\"+archivo.getName();
-			
+
+			String destino = Configuracion.archivosProcesados.getAbsolutePath()+"\\"+archivo.getName();
 			
 			//Movemos el archivo a la carpeta de procesados
 			Files.move(archivo.toPath(), Paths.get(destino));
-			
-			
-			
-			//archivo
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return pedidos;
 	}
 	

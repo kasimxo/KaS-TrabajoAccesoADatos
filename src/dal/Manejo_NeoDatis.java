@@ -22,6 +22,7 @@ import dataClasses.Pedido;
 import dataClasses.Articulo;
 import dataClasses.Cliente;
 import main.Main;
+import utils.Configuracion;
 
 public class Manejo_NeoDatis {
 	
@@ -31,11 +32,8 @@ public class Manejo_NeoDatis {
 	public  Manejo_NeoDatis() {
 		
 		try {
-			//WINDOWS
-			//dbPath =  new File(".\\files\\db\\informes");
 			
-			//LINUX
-			dbPath =  new File("./files/db/informes");
+			dbPath = Configuracion.neoDatisDataBase;
 			
 			if(!dbPath.exists()) {
 				System.err.println("No se ha encontrado la base de datos NeoDatis");

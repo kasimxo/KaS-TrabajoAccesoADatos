@@ -6,6 +6,7 @@ import dal.GeneradorInformes;
 import dal.Manejo_NeoDatis;
 import dal.Manejo_SQL;
 import dal.ProcesadorDeArchivos;
+import utils.Configuracion;
 import utils.Input;
 
 public class Main {
@@ -20,25 +21,11 @@ public class Main {
 	
 	public static Input i;
 	
-	//Las rutas que se usarán durante la ejecucción del programa para la entrada y salida de archivos
-	public static File entradaArchivos;
-	public static File archivosProcesados;
-	public static File schema;
-	public static File informes;
-	
+	public static Configuracion config;
 	
 	public static void main(String[] args) {
 		
-		//Iniciamos las rutas de los archivos
-//		entradaArchivos = new File(".\\files\\archivosEntrada\\");
-//		archivosProcesados = new File(".\\files\\archivosProcesados\\");
-//		schema = new File(".\\files\\schema\\pedidos.xsd");
-//		informes = new File(".\\files\\informes\\");
-		
-		entradaArchivos = new File("./files/archivosEntrada/");
-		archivosProcesados = new File("./files/archivosProcesados/");
-		schema = new File("./files/schema/pedidos.xsd");
-		informes = new File("./files/informes/");
+		config = new Configuracion(); //Con esto leemos el archivo de config y preparamos todas las rutas
 		
 		//Con esto iniciamos la clase que manejará el input
 		i = new Input();
@@ -106,35 +93,37 @@ public class Main {
 				"2. Archivos procesados", 
 				"3. Esquema de validación de pedidos", 
 				"4. Salida de informes", 
-				"5. Restaurar configuración predeterminada"
+				"5. Restaurar configuración predeterminada para sistema Windows",
+				"6. Restaurar configuración predeterminada para sistema Linux"
 				};
 		for (String o : opciones) {System.out.println(o);};
 		switch(Input.leerInt()) {
 		case 1:
 			System.out.println("Introduce la nueva ruta:");
-			entradaArchivos = new File(Input.leerString());
+			config.actualizarEntradaArchivosPath(Input.leerString());
 			System.out.println("Ruta modificada");
 			break;
 		case 2:
 			System.out.println("Introduce la nueva ruta:");
-			archivosProcesados = new File(Input.leerString());
+			config.actualizarArchivosProcesadosPath(Input.leerString());
 			System.out.println("Ruta modificada");
 			break;
 		case 3:
 			System.out.println("Introduce la nueva ruta:");
-			schema = new File(Input.leerString());
+			config.actualizarSchemaPath(Input.leerString());
 			System.out.println("Ruta modificada");
 			break;
 		case 4:
 			System.out.println("Introduce la nueva ruta:");
-			informes = new File(Input.leerString());
+			config.actualizarInformesPath(Input.leerString());
 			System.out.println("Ruta modificada");
 			break;
 		case 5:
-			entradaArchivos = new File(".\\files\\archivosEntrada\\");
-			archivosProcesados = new File(".\\files\\archivosProcesados\\");
-			schema = new File(".\\files\\schema\\pedidos.xsd");
-			informes = new File(".\\files\\informes\\");
+			config.restaurarWidows();
+			System.out.println("Rutas restauradas");
+			break;
+		case 6:
+			config.restaurarLinux();
 			System.out.println("Rutas restauradas");
 			break;
 		default:

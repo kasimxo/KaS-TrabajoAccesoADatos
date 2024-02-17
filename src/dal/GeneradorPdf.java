@@ -15,6 +15,8 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import utils.Configuracion;
+
 /***
  * Encargado de recibir un informe y volcarlo en un pdf
  * @author andres
@@ -31,11 +33,7 @@ public class GeneradorPdf {
 	 */
 	public static void guardarPdf(String titulo, String encabezado, List<String> cabecera, List<List<String>> texto) {
 		
-		//WINDOWS
-		//File f = new File(".\\files\\archivosEntrada\\");
-		
-		//LINUX
-		File f = new File("./files/informes/"+titulo.replace(' ', '_')+".pdf");
+		File f = Configuracion.informes;
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
