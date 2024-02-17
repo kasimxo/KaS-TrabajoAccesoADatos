@@ -49,6 +49,35 @@ public class Manejo_NeoDatis {
 
 	}
 	
+	public List<List<String>> exportarPedidoUnidadesPedidas(){
+		try {
+			establecerConexion();
+			
+			List<List<String>> texto = new ArrayList<List<String>>();
+			
+			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("num_Pedido").sum("cantidad").groupBy("num_Pedido"));
+
+			while (valores.hasNext()) {
+				List<String> linea = new ArrayList<String>();
+				
+				ObjectValues ov = valores.next();
+				BigDecimal cantidad = (BigDecimal) ov.getByIndex(1);
+
+				linea.add((String)ov.getByIndex(0));
+				linea.add(cantidad.toString());
+				texto.add(linea);
+			}
+
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			System.out.println("No se han podido exportar las unidades pedidas por pedido");
+			cerrarConexion();
+			return null;
+		}
+	}
+	
 	/**
 	 * Exporta todos los articulos solicitados y su cantidad solicitada
 	 */
