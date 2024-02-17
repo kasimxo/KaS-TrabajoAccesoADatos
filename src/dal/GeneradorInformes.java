@@ -228,9 +228,9 @@ public class GeneradorInformes {
 		Main.mND.borrarBaseDeDatos();
 		Main.mND.sincronizacion();
 		
-		List<LineaPedido> lineasPedido = Main.mND.exportarLineasDePedido();
+		List<List<String>> texto  = Main.mND.exportarLineasDePedidoTexto();
 		
-		if(lineasPedido == null) {
+		if(texto == null) {
 			System.out.println("No se ha podido generar el informe del número de líneas de pedido recibidas");
 			return;
 		}
@@ -245,10 +245,10 @@ public class GeneradorInformes {
 		cabecera.add("Precio/ud.");
 		cabecera.add("Precio total");
 		
-		String numero = Main.mND.numeroLineasPedido(); // Utiliza un método de NeoDatis
+		String numero = Main.mND.numeroLineasPedido(); 
 		
 		if(numero == null) {
-			numero = Integer.toString(lineasPedido.size());
+			numero = Integer.toString(texto.size());
 		}
 		
 		String introduccion = String.format("El número de líneas de pedido recibidas es: %s\n", numero);
@@ -257,29 +257,15 @@ public class GeneradorInformes {
 		String cabeceraPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s\n", "Cantidad", "N.º de pedido", "N.º de artículo", "Nombre-Categoría", "Precio/ud.", "Precio total");
 		System.out.print(cabeceraPrint);
 		
-		List<List<String>> texto = new ArrayList<List<String>>();
-		
-		for(LineaPedido lp : lineasPedido) {
-			
-			List<String> linea = new ArrayList<String>();
-			
-			linea.add(Integer.toString(lp.getCantidad()));
-			linea.add(lp.getNum_Pedido());
-			linea.add(lp.getNum_Articulo());
-			linea.add(lp.getDescripcion_Categoria());
-			linea.add(lp.getPrecio_ud());
-			linea.add(lp.getPrecio_tot());
-			
+		for(List<String> linea : texto) {
 			String lineaPrint = String.format("%-18s %-18s %-18s %-25s %-18s %-18s\n",
-					lp.getCantidad(),
-					lp.getNum_Pedido(),
-					lp.getNum_Articulo(),
-					lp.getDescripcion_Categoria(),
-					lp.getPrecio_ud(),
-					lp.getPrecio_tot());
-			
+					linea.get(0),
+					linea.get(1),
+					linea.get(2),
+					linea.get(3),
+					linea.get(4),
+					linea.get(5));
 			System.out.print(lineaPrint);
-			texto.add(linea);
 		}
 		
 		

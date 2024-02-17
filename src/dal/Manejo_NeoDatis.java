@@ -321,6 +321,26 @@ public class Manejo_NeoDatis {
 		}
 	}
 	
+	public List<List<String>> exportarLineasDePedidoTexto(){
+		try {
+			establecerConexion();
+			
+			List<List<String>> texto = new ArrayList<List<String>>();
+			
+			Objects<LineaPedido> lineasPedidoExportado = odb.getObjects(LineaPedido.class);
+			
+			for(LineaPedido p : lineasPedidoExportado) {
+				texto.add(p.exportarComoLinea());
+			}
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			cerrarConexion();
+			return null;
+		}
+	}
+	
 	
 	public List<LineaPedido> exportarLineasDePedido(){
 		try {

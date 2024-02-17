@@ -1,5 +1,8 @@
 package dataClasses;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class LineaPedido {
 
 	private int cantidad;
@@ -64,6 +67,17 @@ public class LineaPedido {
 
 	public void setPrecio_tot(String precio_tot) {
 		this.precio_tot = precio_tot;
+	}
+	
+	public List<String> exportarComoLinea(){
+		List<String> linea = new ArrayList<String>();
+		linea.add(Integer.toString(cantidad));
+		linea.add(num_Pedido);
+		linea.add(num_Articulo);
+		linea.add(descripcion_Categoria);
+		linea.add(precio_ud);
+		linea.add(precio_tot);
+		return linea;
 	}
 	
 }
