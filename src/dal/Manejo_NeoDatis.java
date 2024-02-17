@@ -36,8 +36,9 @@ public class Manejo_NeoDatis {
 			dbPath = Configuracion.neoDatisDataBase;
 			
 			if(!dbPath.exists()) {
-				System.err.println("No se ha encontrado la base de datos NeoDatis");
-				throw new Exception();
+				System.err.println("No se ha encontrado la base de datos NeoDatis en la ruta especificada");
+				dbPath.createNewFile();
+				//throw new Exception();
 			}
 			
 			sincronizacion();
@@ -380,7 +381,6 @@ public class Manejo_NeoDatis {
 			borrarPedidos();
 	
 			cerrarConexion();
-			sincronizacion();
 			System.out.println("Se ha borrado la base de datos NeoDatis con éxito");
 		} catch (Exception e) {
 			System.out.println("Ha surgido un error borrando la base de datos");

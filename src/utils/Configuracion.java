@@ -37,7 +37,6 @@ public class Configuracion {
 		} catch (IOException e) {
 			
 		}
-		System.out.println("Vamos a poner las rutas");
 		//Aqui ponemos cada ruta
 		rutas.forEach((K, V) -> {
 			switch (K) {
@@ -63,7 +62,6 @@ public class Configuracion {
 				break;
 			}
 		});
-		System.out.println(rutas);
 	}
 	
 	public static void actualizarArchivoConfig() {
@@ -143,7 +141,7 @@ public class Configuracion {
 		archivosProcesados = new File("./files/archivosProcesados/");
 		schema = new File("./files/schema/pedidos.xsd");
 		informes = new File("./files/informes/");
-		neoDatisDataBase =  new File("./files/db/informes");
+		neoDatisDataBase =  new File("./files/db/pedidosAdiDam.nd");
 		sqliteDataBase = new File("./files/db/pedidosAdiDam.db");
 		actualizarRutas();
 	}

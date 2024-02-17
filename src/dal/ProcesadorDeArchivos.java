@@ -190,7 +190,7 @@ public class ProcesadorDeArchivos {
 				}
 			}
 
-			String destino = Configuracion.archivosProcesados.getAbsolutePath()+"\\"+archivo.getName();
+			String destino = Configuracion.archivosProcesados.getAbsolutePath()+"/"+archivo.getName();
 			
 			//Movemos el archivo a la carpeta de procesados
 			Files.move(archivo.toPath(), Paths.get(destino));
