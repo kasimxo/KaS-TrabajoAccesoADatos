@@ -129,8 +129,8 @@ public class Configuracion {
 	public void restaurarWidows() {
 		entradaArchivos = new File(".\\\\files\\\\archivosEntrada\\\\");
 		archivosProcesados = new File(".\\\\files\\\\archivosProcesados\\\\");
-		schema = new File(".\\\\files\\\\schema\\\\pedidos.xsd");
 		informes = new File(".\\\\files\\\\informes\\\\");
+		schema = new File(".\\\\files\\\\schema\\\\pedidos.xsd");
 		neoDatisDataBase =  new File(".\\\\files\\\\db\\\\pedidosAdiDam.nd");
 		sqliteDataBase = new File(".\\\\files\\\\db\\\\pedidosAdiDam.db");
 		actualizarRutas();
@@ -139,8 +139,8 @@ public class Configuracion {
 	public void restaurarLinux() {
 		entradaArchivos = new File("./files/archivosEntrada/");
 		archivosProcesados = new File("./files/archivosProcesados/");
-		schema = new File("./files/schema/pedidos.xsd");
 		informes = new File("./files/informes/");
+		schema = new File("./files/schema/pedidos.xsd");
 		neoDatisDataBase =  new File("./files/db/pedidosAdiDam.nd");
 		sqliteDataBase = new File("./files/db/pedidosAdiDam.db");
 		actualizarRutas();

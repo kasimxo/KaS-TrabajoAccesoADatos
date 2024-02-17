@@ -1,5 +1,5 @@
 schema=/home/andres/git/KaS-TrabajoAccesoADatos/./files/schema/pedidos.xsd
-entradaArchivos=/home/andres/git/KaS-TrabajoAccesoADatos/./files/archivosProcesados
+entradaArchivos=/home/andres/git/KaS-TrabajoAccesoADatos/./files/archivosEntrada
 sqliteDataBase=/home/andres/git/KaS-TrabajoAccesoADatos/./files/db/pedidosAdiDam.db
 archivosProcesados=/home/andres/git/KaS-TrabajoAccesoADatos/./files/archivosProcesados
 neoDatisDataBase=/home/andres/git/KaS-TrabajoAccesoADatos/./files/db/pedidosAdiDam.nd

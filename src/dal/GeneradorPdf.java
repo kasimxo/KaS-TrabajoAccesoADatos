@@ -2,6 +2,7 @@ package dal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
@@ -33,15 +34,20 @@ public class GeneradorPdf {
 	 */
 	public static void guardarPdf(String titulo, String encabezado, List<String> cabecera, List<List<String>> texto) {
 		
+		String tituloLimpio = limpiarTitulo(titulo);
+		
 		File f = Configuracion.informes;
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
+		FileOutputStream fos;
+
+		
 		Document document = new Document();
 		
 		try {
-
-			PdfWriter pdf = PdfWriter.getInstance(document, new FileOutputStream(f.getAbsolutePath()));
+			fos = new FileOutputStream(new File(f.getAbsolutePath()+"/"+tituloLimpio));
+			PdfWriter pdf = PdfWriter.getInstance(document, fos );
 			
 			document.open();
 			
@@ -98,6 +104,10 @@ public class GeneradorPdf {
 			System.out.println("Ha surgido un error durante la exportación del informe.");
 		}
 		
+	}
+	
+	public static String limpiarTitulo(String titulo) {
+		return titulo.replace(' ', '_') + ".pdf";
 	}
 	
 }
