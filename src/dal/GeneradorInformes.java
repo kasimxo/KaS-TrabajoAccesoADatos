@@ -331,10 +331,10 @@ public class GeneradorInformes {
 	public static void informePedidoClienteFecha() {
 		Main.mND.borrarBaseDeDatos();
 		Main.mND.sincronizacion();
+
+		List<List<String>> texto = Main.mND.exportarPedidoClienteFecha();
 		
-		List<Pedido> pedidos = Main.mND.exportarPedidos();
-		
-		if(pedidos == null) {
+		if(texto == null) {
 			System.out.println("No se ha podido generar el informe de pedidos por cliente y fecha.");
 			return;
 		}
@@ -347,22 +347,12 @@ public class GeneradorInformes {
 		
 		String cabeceraPrint = String.format("%-18s %-18s %-18s\n", "N.º de pedido", "Cód. de cliente", "Fecha");
 		System.out.printf(cabeceraPrint);
-		
-		List<List<String>> texto = new ArrayList<List<String>>();
-		
-		for(Pedido p : pedidos) {
-			
-			List<String> linea = new ArrayList<String>();
-			
-			linea.add(p.getNumeroPedido());
-			linea.add(p.getCliente().getNumeroCliente());
-			linea.add(p.getFecha());
-			
-			String lineaPrint = String.format("%-18s %-18s %-18s\n", p.getNumeroPedido(), p.getCliente().getNumeroCliente(), p.getFecha());
-			System.out.print(lineaPrint);
-			texto.add(linea);
-		}
 
+		for(List<String> linea : texto) {
+			String lineaPrint = String.format("%-18s %-18s %-18s\n", linea.get(0), linea.get(1), linea.get(2));
+			System.out.print(lineaPrint); 
+		}
+		
 		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 		
 	}

@@ -142,21 +142,20 @@ public class Manejo_NeoDatis {
 		try {
 			establecerConexion();
 			
+			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).avg("cantidad")); 
+
+			String media = "";
 			
-			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).field("cantidad")); //Cantidad de articulos por pedido
-			
-			int totalArticulos = 0;
-			
+			//Solo lo debe hacer una vez puesto que es un valor único
 			while (valores.hasNext()) {
 				ObjectValues ov = valores.next();
-				totalArticulos += Integer.parseInt((String) ov.getByAlias("cantidad"));
+				BigDecimal mediaN = (BigDecimal) ov.getByIndex(0);
+				media = mediaN.toString();
 			}
 
-			BigInteger totalPedidos = odb.count(new CriteriaQuery(Pedido.class));
-			int rawMedia = totalArticulos / totalPedidos.intValue() ;
-			
 			cerrarConexion();
-			return Integer.toString(rawMedia);
+			return media;
+			//return Integer.toString(rawMedia);
 		} catch (Exception e) {
 			System.out.println("No se ha podido calcular la media de artículos por pedido recibido");
 			cerrarConexion();
@@ -289,6 +288,38 @@ public class Manejo_NeoDatis {
 			return null;
 		}
 	}
+	
+	public List<List<String>> exportarPedidoClienteFecha() {
+		try {
+			establecerConexion();
+			
+			List<List<String>> texto = new ArrayList<List<String>>();
+			
+
+			Values valores = odb.getValues(new ValuesCriteriaQuery(Pedido.class).field("numeroPedido").field("cliente.numeroCliente").field("fecha")); //Cantidad de articulos por pedido
+
+			while (valores.hasNext()) {
+				ObjectValues ov = valores.next();
+				
+				List<String> linea = new ArrayList<String>();
+				
+				linea.add((String) ov.getByIndex(0));
+
+				linea.add((String) ov.getByIndex(1));
+				
+				linea.add((String) ov.getByIndex(2));
+
+				texto.add(linea);
+			}
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			System.out.println("No se han podido exportar los pedidos por cliente y fecha");
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * Extrae los datos de las líneas de pedido de la base de datos de sqlite y

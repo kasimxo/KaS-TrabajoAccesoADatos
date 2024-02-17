@@ -1,3 +1,6 @@
+/* Este es el esquema para la base de datos de SQLITE */
+/* Se puede copiar el archivo entero y ejecutarlo en SQLITE para crear la base de datos de 0 */
+
 DROP TABLE pedidos;
 DROP TABLE rel_pedido_articulos;
 DROP TABLE clientes;
