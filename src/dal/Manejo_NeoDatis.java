@@ -483,7 +483,6 @@ public class Manejo_NeoDatis {
 			this.odb = ODBFactory.open(dbPath.getAbsolutePath());
 		} catch (Exception e) {
 			System.out.println("No se ha podido establecer conexión con la base de datos NeoDatis.");
-			System.out.println(dbPath.getAbsolutePath());
 		}
 	}
 	
@@ -535,16 +534,11 @@ public class Manejo_NeoDatis {
 	 */
 	public void borrarBaseDeDatos() {
 		try {
-			establecerConexion();
-			
 			borrarLineasPedido();
 			borrarPedidos();
-	
-			cerrarConexion();
 			System.out.println("Se ha borrado la base de datos NeoDatis con éxito");
 		} catch (Exception e) {
 			System.out.println("Ha surgido un error borrando la base de datos");
-			cerrarConexion();
 		}
 	}
 	
