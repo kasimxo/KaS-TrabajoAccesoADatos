@@ -20,6 +20,7 @@ import utils.Configuracion;
 
 /***
  * Encargado de recibir un informe y volcarlo en un pdf
+ * Utiliza la librería OpenPDF
  * @author andres
  *
  */
@@ -95,6 +96,63 @@ public class GeneradorPdf {
 				document.add(table);
 			}
 			
+			
+			
+	        
+	        document.close(); // Cerramos el documento
+	        System.out.println("Se exportado el informe con éxito.");
+		} catch (Exception e) {
+			System.out.println("Ha surgido un error durante la exportación del informe.");
+		}
+		
+	}
+	
+	/**
+	 * Crea un archivo pdf con toda la información del informe 
+	 * No utiliza un formato de tabla, si no que por cada línea de texto que recibe, 
+	 * introduce una nueva línea en el pdf
+	 */
+	public static void guardarPdf(String titulo, List<String> texto) {
+		
+		String tituloLimpio = limpiarTitulo(titulo);
+		
+		File f = Configuracion.informes;
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		FileOutputStream fos;
+
+		
+		Document document = new Document();
+		
+		try {
+			fos = new FileOutputStream(new File(f.getAbsolutePath()+"/"+tituloLimpio));
+			PdfWriter pdf = PdfWriter.getInstance(document, fos );
+			
+			document.open();
+			
+			//Creamos el párrado con los datos de la empresa y le damos estilo
+			Font destacado = new Font(Font.TIMES_ROMAN, 18, Font.ITALIC);
+			Phrase empresa = new Phrase("AdiDam S.L\n", destacado);
+			Font normal = new Font(Font.TIMES_ROMAN, 14, Font.NORMAL);
+			Phrase fecha = new Phrase(Calendar.getInstance().getTime().toString(), normal);
+			Paragraph cabeceraEmpresa = new Paragraph();
+			cabeceraEmpresa.setAlignment(Element.ALIGN_RIGHT);
+			cabeceraEmpresa.add(empresa);
+			cabeceraEmpresa.add(fecha);
+			cabeceraEmpresa.add("\n\n\n\n"); // Añadimos unos saltos de línea para separar la información
+			document.add(cabeceraEmpresa);
+			
+			Font subrayado = new Font(Font.TIMES_ROMAN, 16, Font.BOLD);
+			
+
+			
+			Paragraph contenido = new Paragraph();
+			for(String linea : texto) {
+				Phrase frase = new Phrase(linea, normal);
+				contenido.add(frase);
+			}
+			document.add(contenido);
 			
 			
 	        

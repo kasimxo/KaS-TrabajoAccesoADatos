@@ -7,6 +7,10 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.HashMap;
 
+/***
+ * Modifica las rutas de entrada, salida, bases de datos...
+ * Lee y guarda la información en un archivo para que perdure entre ejecuciones del programa.
+ */
 public class Configuracion {
 	
 	//Las rutas que se usarán durante la ejecucción del programa para la entrada y salida de archivos

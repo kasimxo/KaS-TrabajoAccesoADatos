@@ -1,6 +1,6 @@
-schema=/home/andres/git/KaS-TrabajoAccesoADatos/./files/schema/pedidos.xsd
-entradaArchivos=/home/andres/git/KaS-TrabajoAccesoADatos/./files/archivosEntrada
-sqliteDataBase=/home/andres/git/KaS-TrabajoAccesoADatos/./files/db/pedidosAdiDam.db
-archivosProcesados=/home/andres/git/KaS-TrabajoAccesoADatos/./files/archivosProcesados
-neoDatisDataBase=/home/andres/git/KaS-TrabajoAccesoADatos/./files/db/pedidosAdiDam.nd
-informes=/home/andres/git/KaS-TrabajoAccesoADatos/./files/informes
+schema=D:\workspace\KaS-TrabajoAccesoADatos\.\files\schema\pedidos.xsd
+entradaArchivos=D:\workspace\KaS-TrabajoAccesoADatos\.\files\archivosEntrada
+sqliteDataBase=D:\workspace\KaS-TrabajoAccesoADatos\.\files\db\pedidosAdiDam.db
+archivosProcesados=D:\workspace\KaS-TrabajoAccesoADatos\.\files\archivosProcesados
+neoDatisDataBase=D:\workspace\KaS-TrabajoAccesoADatos\.\files\db\pedidosAdiDam.nd
+informes=D:\workspace\KaS-TrabajoAccesoADatos\.\files\informes

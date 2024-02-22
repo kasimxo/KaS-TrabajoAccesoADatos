@@ -141,8 +141,7 @@ public class Main {
 				"5. Informe de las unidades de cada artículo por servir",
 				"6. Informe del total de unidades pedidas por pedido",
 				"7. Informe de media de artículos por pedido recibidos",
-				"8. Informe resumen de pedidos por cliente y fecha", //Opcional 1
-				"9. Informe de artículos por servir" //Opcional 2: Informe artículos por cantidad
+				"8. Informe resumen de los pedidos"//Opcional
 			};
 		System.out.println("Indica el tipo de informe que desea generar:");
 		for(String informe : informes) {
@@ -180,11 +179,7 @@ public class Main {
 			break;
 		case 8:
 			//Opcional I: 8. Informe resumen de pedidos por cliente y fecha
-			GeneradorInformes.informePedidoClienteFecha();
-			break;
-		case 9:
-			//Opcional II: 9. Informe de artículos por servir
-			GeneradorInformes.informeArticulosPorCantidad();
+			GeneradorInformes.informeResumenPedidos();
 			break;
 		default:
 			System.out.println("Opción no reconocida");

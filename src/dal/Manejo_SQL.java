@@ -17,7 +17,10 @@ import main.Main;
 import utils.Configuracion;
 import utils.Input;
 
-
+/***
+ * Esta clase contiene todos los métodos que interactúan con la base de datos sql
+ * Sirve para insertar y exportar de dicha bbdd
+ */
 public class Manejo_SQL {
 	
 	private File dbPath;
@@ -34,14 +37,7 @@ public class Manejo_SQL {
 				throw new Exception();
 			}
 			
-			Class.forName("org.sqlite.JDBC");
-			this.con = DriverManager.getConnection("jdbc:sqlite:"+dbPath.getAbsolutePath());
-			
-			this.s = con.createStatement();
-			
-			 //db.execSQL("PRAGMA foreign_keys=ON");
-			//s.executeQuery("PRAGMA foreign_keys=ON");
-			s.execute("PRAGMA foreign_keys=ON");
+			establecerConexion();
 			
 			//Hacemos la carga de los productos y clientes del primer archivo, simulando que ya estuvieran guardados en la bbdd
 			cargaInicial();
@@ -50,10 +46,12 @@ public class Manejo_SQL {
 		} catch (Exception e) {
 			System.err.println("No se ha podido establecer conexión con la base de datos SQL.");
 			cerrarConexion();
-			//e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * El único método que se utiliza para establecer conexión con la base de datos.
+	 */
 	public void establecerConexion() {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -61,10 +59,8 @@ public class Manejo_SQL {
 			
 			this.s = con.createStatement();
 			
-			s.execute("PRAGMA foreign_keys=ON");
+			s.execute("PRAGMA foreign_keys=ON"); //Activa las claves foráneas y su delete cascade
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		}
 		
 	}

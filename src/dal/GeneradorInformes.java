@@ -26,7 +26,10 @@ import com.lowagie.text.pdf.PdfPCell;
 
 
 /**
- * Esta clase no solo muestra los informes por pantalla, si no que además los exporta como pdf
+ * Esta clase no solo muestra los informes por pantalla, 
+ * si no que además los exporta como pdf
+ * 
+ * Utiliza los métodos de las clases encargadas de conectar con la base de datos para generar el informe.
  * @author andres
  *
  */
@@ -145,25 +148,38 @@ public class GeneradorInformes {
 		GeneradorPdf.guardarPdf(titulo, null, cabecera, texto);
 	}
 	
-	public static void informePedidosRecibidos() {
+	/**
+	 * Extrae toda la información de los pedidos de neodatis y la muestra en pantalla
+	 * Además, la guarda en un pdf.
+	 */
+	public static void informeResumenPedidos() {
 		Main.mND.borrarBaseDeDatos();
 		Main.mND.sincronizacion();
 		
-		List<Pedido> pedidos = Main.mND.exportarPedidos();
+		String titulo = "Informe Resumen Pedidos";
 		
+		List<String> texto = Main.mND.exportarInformeCompleto();
+		
+		for(String linea : texto) {
+			System.out.print(linea);
+		}
+		
+		GeneradorPdf.guardarPdf(titulo, texto);
+	}
+	
+	public static void informePedidosRecibidos() {
+		Main.mND.borrarBaseDeDatos();
+		Main.mND.sincronizacion();
+
 		List<List<String>> texto = Main.mND.exportarPedidosTexto();
 		
-		if(pedidos == null) {
+		if(texto == null) {
 			System.out.println("No se ha podido generar el informe del número de líneas de pedido recibidas");
 			return;
 		}
 		
 		String numero = Main.mND.numeroPedidosRecibidos();
-		//Si hubiera dado algún error ese método, prueba un método alternativo
-		if(numero == null) {
-			numero = Integer.toString(pedidos.size());
-		}
-		
+
 		String titulo = "Número de pedidos recibidos";
 		
 		String introduccion = String.format("El número de pedidos recibidos es: %s\n", numero);

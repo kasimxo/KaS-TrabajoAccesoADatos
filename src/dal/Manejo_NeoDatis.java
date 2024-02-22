@@ -193,27 +193,79 @@ public class Manejo_NeoDatis {
 	}
 	
 	/**
-	 * Calcula la media de la cantidad de articulos solicitada por pedido
-	 * ie: si solo se solicita un tipo de artículo, pero 100 unidades de ese articulo, devuelve 100
+	 * Exporta toda la información de los pedidos con el siguiente formato:<br>
+	 * Pedido       Cliente            Fecha<br>
+	 * 9999       	 9999         		2024-01-22<br>
+     *                                         		Artículo   Cantidad<br>
+     *                                            	999999         99<br>
+	 * @return
+	 */
+	public List<String> exportarInformeCompleto() {
+		try {
+			establecerConexion();
+			
+			List<String> texto = new ArrayList<String>();
+			
+			Objects<Pedido> objs = odb.getObjects(Pedido.class);
+
+			String cabecera1 = String.format("%-12s %-18s %-10s\n", "Pedido", "Cliente", "Fecha");
+			texto.add(cabecera1);
+			
+			for(Pedido p : objs) {
+				
+				String datosPedido = String.format("%-12s %-18s %-10s\n", p.getNumeroPedido(), p.getCliente().getNumeroCliente(), p.getFecha());
+				texto.add(datosPedido);
+				
+				String cabecera2 = String.format("%-12s %-18s %-10s %12s %10s\n"," "," "," ",  "Artículo", "Cantidad");
+				texto.add(cabecera2);
+				
+				for(Articulo a : p.getArticulos()) {
+					String datosArticulo = String.format("%-12s %-18s %-10s %12s %10s\n"," "," "," ", a.getCodigo(), a.getCantidad());
+					texto.add(datosArticulo);
+				}
+			}
+			
+			cerrarConexion();
+			return texto;
+		} catch (Exception e) {
+			System.out.println("No se ha podido recuperar el informe completo de pedidos");
+			cerrarConexion();
+			return null;
+		} 
+		
+	}
+	
+	
+	/**
+	 * Calcula la cantidad de artículos total dividida entre el número de pedidos
 	 * @return
 	 */
 	public String mediaArticulosPorPedido() {
 		try {
 			establecerConexion();
 			
-			Values valores = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).avg("cantidad")); 
-
-			String media = "";
+			Values valoresSumados = odb.getValues(new ValuesCriteriaQuery(LineaPedido.class).sum("cantidad")); //Suma la cantidad total de artículos pedidos
+			Values numeroPedidos = odb.getValues(new ValuesCriteriaQuery(Pedido.class).count("num_Pedido")); //Cuenta el número de pedidos que tenemos
+			int numPedidos = 0;
+			int cantidadArticulos = 0;
 			
 			//Solo lo debe hacer una vez puesto que es un valor único
-			while (valores.hasNext()) {
-				ObjectValues ov = valores.next();
-				BigDecimal mediaN = (BigDecimal) ov.getByIndex(0);
-				media = mediaN.toString();
+			while (numeroPedidos.hasNext()) {
+				ObjectValues ov = numeroPedidos.next();
+				
+				BigInteger nPedidos = (BigInteger) ov.getByIndex(0);
+				numPedidos = nPedidos.intValue();
+			}
+			
+			//Solo lo hace una vez puesto que es un valor único
+			while (valoresSumados.hasNext()) {
+				ObjectValues ov = valoresSumados.next();
+				BigDecimal cantidad = (BigDecimal) ov.getByIndex(0);
+				cantidadArticulos = cantidad.intValue();
 			}
 
 			cerrarConexion();
-			return media;
+			return Integer.toString(cantidadArticulos/numPedidos);
 			//return Integer.toString(rawMedia);
 		} catch (Exception e) {
 			System.out.println("No se ha podido calcular la media de artículos por pedido recibido");
